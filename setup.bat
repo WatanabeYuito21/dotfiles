@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 setlocal enabledelayedexpansion
 
 REM Windows用 Neovim dotfiles セットアップスクリプト
