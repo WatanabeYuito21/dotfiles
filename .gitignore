@@ -1,0 +1,21 @@
+# Neovim用の除外設定
+lazy-lock.json
+.DS_Store
+*.log
+.netrwhist
+
+# 一時ファイル
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS固有ファイル
+Thumbs.db
+
+# tmux plugin manager (TPM)で管理されるプラグイン
+tmux/plugins/
+tmux/resurrect
+
+# tmux一時ファイル
+*.tmux
