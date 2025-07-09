@@ -116,17 +116,12 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-. "$HOME/.cargo/env"
+# =====================================
+# WSL2特有の設定
+# =====================================
+
+# WSL2 Interop修正関数
 fix_wsl2_interop() {
     for i in $(pstree -np -s $$ | grep -o -E '[0-9]+'); do
         if [[ -e "/run/WSL/${i}_interop" ]]; then
@@ -135,6 +130,30 @@ fix_wsl2_interop() {
     done
 }
 
+# =====================================
+# Python環境設定（pyenv for Linux）
+# =====================================
+
+# pyenv設定（WSL2/Linux用）
+if [ -d "$HOME/.pyenv" ]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+fi
+
+# =====================================
+# Rust環境設定
+# =====================================
+
+# Cargo設定（WSL2/Linux用）
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
+# =====================================
+# 履歴共有設定
+# =====================================
 
 function share_history {
   # 最後に実行したコマンドを履歴ファイルに追記
@@ -144,8 +163,10 @@ function share_history {
   # 履歴ファイルからメモリへコマンド履歴を読み込む
   history -r
 }
+
 # 上記の一連の処理を、プロンプト表示前に（＝何かコマンドを実行することに）実行する
 PROMPT_COMMAND='share_history'
+
 # bashのプロセスを終了する時に、メモリ上の履歴を履歴ファイルに追記する、という動作を停止する
 # （history -aによって代替されるため）
 shopt -u histappend
