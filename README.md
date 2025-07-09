@@ -1,45 +1,8 @@
-### tmuxプラグインが動作しない（Linux/macOSのみ）
+# Neovim, tmux & bash Dotfiles
 
-1. TPMがインストールされているか確認:
+個人用のNeovim・tmux・bash設定ファイルです。Lua設定でモダンなNeovim環境と効率的なtmux環境、カスタマイズされたbash環境を構築します。
 
-   ```bash
-   ls ~/.tmux/plugins/tpm
-   ```
-
-2. tmux設定を再読み込み:
-   ```bash
-   tmux source-file ~/.config/tmux/### プラグインの追加
-   ```
-
-`lua/plugins.lua`の適切なカテゴリに新しいプラグインを追加:
-
-```lua
--- 例: 新しいプラグインの追加
-{
-    'author/plugin-name',
-    config = function()
-        -- プラグイン設定
-    end,
-},
-```
-
-### tmux プラグインの管理
-
-tmux プラグインは [TPM](https://github.com/tmux-plugins/tpm) で管理されます:
-
-1. `tmux.conf` に新しいプラグインを追加:
-
-   ```bash
-   set -g @plugin 'plugin-author/plugin-name'
-   ```
-
-2. tmux内で `Prefix + I` を押してインストール
-
-3. `Prefix + U` で更新、`Prefix + alt + u` でアンインストール# Neovim & tmux Dotfiles
-
-個人用のNeovim・tmux設定ファイルです。Lua設定でモダンなNeovim環境と効率的なtmux環境を構築します。
-
-## 機能
+## 🚀 機能
 
 ### Neovim設定
 
@@ -92,56 +55,72 @@ tmux プラグインは [TPM](https://github.com/tmux-plugins/tpm) で管理さ�
 - `Prefix + y` → コピー
 - `Prefix + I` → プラグインインストール
 
-## インストール
+### bash設定
+
+#### 主要機能
+
+- **pyenv設定**: Python バージョン管理の自動初期化
+- **Cargo設定**: Rust 環境の自動読み込み
+- **WSL2サポート**: Windows Subsystem for Linux 2 対応
+- **履歴共有**: 複数のbashセッション間でリアルタイム履歴共有
+- **カラープロンプト**: 見やすいカラー表示
+- **基本エイリアス**: 便利なコマンドエイリアス
+
+#### 主要なエイリアス
+
+- `ll` → `ls -alF` (詳細リスト表示)
+- `la` → `ls -A` (隠しファイル含む表示)
+- `l` → `ls -CF` (簡潔な表示)
+- カラー対応: `grep`, `fgrep`, `egrep`
+
+#### 特殊機能
+
+- **WSL2 Interop修正**: `fix_wsl2_interop()` 関数でプロセス間通信を修正
+- **履歴共有**: `share_history()` 関数で複数セッション間の履歴同期
+
+## 📦 インストール
 
 ### Linux/macOS環境
 
-1. このリポジトリをクローン:
+```bash
+# このリポジトリをクローン
+git clone <your-repository-url> ~/dotfiles
 
-   ```bash
-   git clone <your-repository-url> ~/dotfiles
-   ```
+# セットアップスクリプトを実行
+cd ~/dotfiles
+chmod +x setup.sh
+./setup.sh
 
-2. セットアップスクリプトを実行:
+# bash設定を反映（自動で実行されますが、手動でも可能）
+source ~/.bashrc
 
-   ```bash
-   cd ~/dotfiles
-   chmod +x setup.sh
-   ./setup.sh
-   ```
-
-3. Neovimを起動してプラグインの自動インストールを確認:
-   ```bash
-   nvim
-   ```
+# Neovimを起動してプラグインの自動インストールを確認
+nvim
+```
 
 ### Windows環境
 
 #### PowerShell版（推奨）
 
-1. このリポジトリをクローン:
+```powershell
+# このリポジトリをクローン
+git clone <your-repository-url> $env:USERPROFILE\dotfiles
 
-   ```powershell
-   git clone <your-repository-url> $env:USERPROFILE\dotfiles
-   ```
-
-2. PowerShellセットアップスクリプトを実行:
-   ```powershell
-   cd $env:USERPROFILE\dotfiles
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # 初回のみ
-   .\setup.ps1
-   ```
+# PowerShellセットアップスクリプトを実行
+cd $env:USERPROFILE\dotfiles
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # 初回のみ
+.\setup.ps1
+```
 
 #### バッチファイル版
 
-1. リポジトリをクローン後、コマンドプロンプトを**管理者として実行**
-2. セットアップスクリプトを実行:
-   ```cmd
-   cd %USERPROFILE%\dotfiles
-   setup.bat
-   ```
+```cmd
+# リポジトリをクローン後、コマンドプロンプトを管理者として実行
+cd %USERPROFILE%\dotfiles
+setup.bat
+```
 
-**注意**: Windowsでシンボリックリンクを作成するには管理者権限が必要です。権限がない場合はジャンクションまたはコピーが使用されます。
+**注意**: Windowsでシンボリックリンクを作成するには管理者権限が必要です。
 
 ### 共通の後処理
 
@@ -151,59 +130,67 @@ LSPサーバーをインストール（オプション）:
 :Mason
 ```
 
-### 必要な依存関係
+## 📂 設定ファイル構成
 
-### 必要な依存関係
+```
+dotfiles/
+├── nvim/                    # Neovim設定
+│   ├── init.lua            # メイン設定ファイル
+│   └── lua/
+│       ├── options.lua     # 基本オプション
+│       ├── keymaps.lua     # キーマップ
+│       ├── plugins.lua     # プラグイン定義
+│       ├── lsp-config.lua  # LSP設定
+│       ├── cmp-config.lua  # 補完設定
+│       └── conform-config.lua # フォーマッター設定
+├── tmux/                   # tmux設定（Linux/macOSのみ）
+│   ├── tmux.conf          # tmux設定ファイル
+│   └── plugins/           # TPMプラグイン（自動生成）
+├── bash/                   # bash設定
+│   └── bashrc             # bash設定ファイル
+├── setup.sh               # Linux/macOS用セットアップスクリプト
+├── setup.bat              # Windows用セットアップスクリプト（cmd）
+├── setup.ps1              # Windows用セットアップスクリプト（PowerShell）
+└── README.md             # このファイル
+```
 
-#### 必須
+## ⚙️ 必要な依存関係
+
+### 必須
+
+- **Git**
+- **bash** (Linux/macOS/WSL)
+
+### Neovim関連
 
 - **Neovim** (>= 0.8.0)
-- **Git**
+- **Python3** (Neovim provider用)
+- **Node.js** (Markdown preview等)
 
-#### Linux/macOS追加要件
+### tmux関連（Linux/macOSのみ）
 
-- **tmux** (設定を使用する場合)
+- **tmux**
 
-#### Windows推奨
+### bash関連（推奨）
+
+- **pyenv** (Python バージョン管理)
+- **Cargo/Rust** (Rust 開発環境)
+
+### Windows推奨
 
 - **Windows Terminal** (より良いターミナル体験)
 - **PowerShell 7+** (PowerShellスクリプト使用時)
 - **Nerd Font** (アイコン表示用、例: JetBrains Mono Nerd Font)
 
-#### オプション（全プラットフォーム）
+### 各種言語ツール（オプション）
 
-- **Python3** (Neovim provider用)
-- **Node.js** (Markdown preview等)
-- **各種言語ツール**:
-  - Python: `pip install black isort`
-  - JavaScript/TypeScript: `npm install -g prettier`
-  - Rust: `rustup component add rustfmt`
-  - Go: `go install -a std`
-  - Lua: `stylua` (Windows: `scoop install stylua`)
+- **Python**: `pip install black isort`
+- **JavaScript/TypeScript**: `npm install -g prettier`
+- **Rust**: `rustup component add rustfmt`
+- **Go**: `go install -a std`
+- **Lua**: `stylua` (Windows: `scoop install stylua`)
 
-## 設定ファイル構成
-
-```
-dotfiles/
-├── nvim/                 # Neovim設定
-│   ├── init.lua         # メイン設定ファイル
-│   └── lua/
-│       ├── options.lua       # 基本オプション
-│       ├── keymaps.lua       # キーマップ
-│       ├── plugins.lua       # プラグイン定義
-│       ├── lsp-config.lua    # LSP設定
-│       ├── cmp-config.lua    # 補完設定
-│       └── conform-config.lua # フォーマッター設定
-├── tmux/                # tmux設定（Linux/macOSのみ）
-│   ├── tmux.conf        # tmux設定ファイル
-│   └── plugins/         # TPMプラグイン（自動生成）
-├── setup.sh             # Linux/macOS用セットアップスクリプト
-├── setup.bat            # Windows用セットアップスクリプト（cmd）
-├── setup.ps1            # Windows用セットアップスクリプト（PowerShell）
-└── README.md            # このファイル
-```
-
-## カスタマイズ
+## 🔧 カスタマイズ
 
 ### 新しいLSPサーバーの追加
 
@@ -218,6 +205,52 @@ if vim.fn.executable('language-server-binary') == 1 then
     })
 end
 ```
+
+### Neovimプラグインの追加
+
+`lua/plugins.lua`の適切なカテゴリに新しいプラグインを追加:
+
+```lua
+-- 例: 新しいプラグインの追加
+{
+    'author/plugin-name',
+    config = function()
+        -- プラグイン設定
+    end,
+},
+```
+
+### tmuxプラグインの管理
+
+tmux プラグインは [TPM](https://github.com/tmux-plugins/tpm) で管理されます:
+
+1. `tmux.conf` に新しいプラグインを追加:
+
+   ```bash
+   set -g @plugin 'plugin-author/plugin-name'
+   ```
+
+2. tmux内で `Prefix + I` を押してインストール
+
+3. `Prefix + U` で更新、`Prefix + alt + u` でアンインストール
+
+### bash設定の追加
+
+#### カスタムエイリアス
+
+`~/.bash_aliases`ファイルを作成して、個人的なエイリアスを追加:
+
+```bash
+# カスタムエイリアスの例
+alias ..='cd ..'
+alias ...='cd ../..'
+alias v='nvim'
+alias g='git'
+```
+
+#### 環境固有の設定
+
+環境固有の設定は`~/.bashrc.local`に追加することをお勧めします（このファイルはgitignoreされます）。
 
 ### tmux設定の追加
 
@@ -235,7 +268,7 @@ cp /path/to/your/tmux.conf ~/dotfiles/tmux/
 ./setup.sh
 ```
 
-## 設定の同期
+## 🔄 設定の同期
 
 ### 設定を更新した場合
 
@@ -269,15 +302,17 @@ cd $env:USERPROFILE\dotfiles
 git pull
 ```
 
-## トラブルシューティング
+## 🛠️ トラブルシューティング
 
-### プラグインが読み込まれない
+### Neovim関連
+
+#### プラグインが読み込まれない
 
 ```vim
 :Lazy sync
 ```
 
-### LSPが動作しない
+#### LSPが動作しない
 
 1. LSPサーバーがインストールされているか確認:
 
@@ -289,6 +324,50 @@ git pull
    ```vim
    :LspInfo
    ```
+
+### tmux関連
+
+#### プラグインが動作しない（Linux/macOSのみ）
+
+1. TPMがインストールされているか確認:
+
+   ```bash
+   ls ~/.tmux/plugins/tpm
+   ```
+
+2. tmux設定を再読み込み:
+   ```bash
+   tmux source-file ~/.config/tmux/tmux.conf
+   ```
+
+### bash関連
+
+#### bash設定が反映されない
+
+```bash
+# bash設定を手動で再読み込み
+source ~/.bashrc
+
+# または新しいターミナルを開く
+```
+
+#### pyenvが動作しない
+
+```bash
+# pyenvのパスを確認
+echo $PYENV_ROOT
+echo $PATH
+
+# pyenvを再インストール
+curl https://pyenv.run | bash
+```
+
+#### WSL2でInterop機能が動作しない
+
+```bash
+# WSL2 Interopを手動で修正
+fix_wsl2_interop
+```
 
 ### Windows固有のトラブルシューティング
 
@@ -331,13 +410,40 @@ pip install black isort
 npm install -g prettier
 ```
 
-## 更新履歴
+## 📋 推奨インストール手順
 
-- 初期バージョン: 基本的なLSP + 補完 + フォーマッター構成
-- lazy.nvimベースのプラグイン管理
-- モジュール化された設定構造
-- tmux設定の追加とTPM連携
+### pyenvのインストール（Python バージョン管理）
 
-## ライセンス
+```bash
+# pyenvをインストール
+curl https://pyenv.run | bash
+
+# bashrcが既に設定済みなので、新しいターミナルを開くか：
+source ~/.bashrc
+
+# Pythonをインストール
+pyenv install 3.11.0
+pyenv global 3.11.0
+```
+
+### Rustのインストール（Rust 開発環境）
+
+```bash
+# Rustをインストール
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# bashrcが既に設定済みなので、新しいターミナルを開くか：
+source ~/.bashrc
+```
+
+## 📈 更新履歴
+
+- **v1.0**: 基本的なNeovim LSP + 補完 + フォーマッター構成
+- **v1.1**: lazy.nvimベースのプラグイン管理
+- **v1.2**: モジュール化された設定構造
+- **v1.3**: tmux設定の追加とTPM連携
+- **v1.4**: bash設定の追加（pyenv, Cargo, WSL2サポート, 履歴共有）
+
+## 📄 ライセンス
 
 個人用設定ファイルのため、自由にご利用ください。

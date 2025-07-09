@@ -70,6 +70,45 @@ setup_config() {
     fi
 }
 
+# ホームディレクトリ設定ファイルのリンク作成
+setup_home_config() {
+    local config_name="$1"
+    local source_file="$2"
+    local target_file="$3"
+
+    log_info "$config_name 設定をセットアップ中..."
+    log_info "ソースファイル: $source_file"
+    log_info "ターゲットファイル: $target_file"
+
+    # ソースファイルの存在確認
+    if [ ! -f "$source_file" ]; then
+        log_warn "$config_name 設定ファイルが見つかりません: $source_file"
+        return 1
+    fi
+
+    # 既存のファイル/リンクを処理
+    if [ -L "$target_file" ]; then
+        log_info "既存のシンボリックリンクを削除: $target_file"
+        rm "$target_file"
+    elif [ -f "$target_file" ]; then
+        backup_if_exists "$target_file"
+    fi
+
+    # シンボリックリンクを作成
+    ln -sf "$source_file" "$target_file"
+
+    # 結果を確認
+    if [ -L "$target_file" ]; then
+        log_info "$config_name のシンボリックリンクを作成しました:"
+        ls -la "$target_file"
+        log_info "リンク先: $(readlink $target_file)"
+        return 0
+    else
+        log_error "$config_name のシンボリックリンクの作成に失敗しました"
+        return 1
+    fi
+}
+
 # Neovim設定のセットアップ
 setup_neovim() {
     setup_config "nvim" || exit 1
@@ -78,6 +117,23 @@ setup_neovim() {
 # tmux設定のセットアップ
 setup_tmux() {
     setup_config "tmux"
+}
+
+# bash設定のセットアップ
+setup_bash() {
+    local source_file="$DOTFILES_DIR/bash/bashrc"
+    local target_file="$HOME/.bashrc"
+    
+    setup_home_config "bash" "$source_file" "$target_file"
+    
+    # 追加の bash 設定ファイルがある場合も処理
+    if [ -f "$DOTFILES_DIR/bash/bash_aliases" ]; then
+        setup_home_config "bash_aliases" "$DOTFILES_DIR/bash/bash_aliases" "$HOME/.bash_aliases"
+    fi
+    
+    if [ -f "$DOTFILES_DIR/bash/bash_profile" ]; then
+        setup_home_config "bash_profile" "$DOTFILES_DIR/bash/bash_profile" "$HOME/.bash_profile"
+    fi
 }
 
 # 依存関係のチェック
@@ -96,6 +152,12 @@ check_dependencies() {
         exit 1
     fi
 
+    # bash
+    if ! command -v bash &> /dev/null; then
+        log_error "bash がインストールされていません"
+        exit 1
+    fi
+
     # tmux
     if ! command -v tmux &> /dev/null; then
         log_warn "tmux がインストールされていません（tmux設定は無視されます）"
@@ -104,6 +166,16 @@ check_dependencies() {
     # Python3 (Neovim provider用)
     if ! command -v python3 &> /dev/null; then
         log_warn "Python3 がインストールされていません（一部機能が制限される可能性があります）"
+    fi
+
+    # pyenv
+    if ! command -v pyenv &> /dev/null; then
+        log_warn "pyenv がインストールされていません（Python バージョン管理が使用できません）"
+    fi
+
+    # cargo
+    if ! command -v cargo &> /dev/null; then
+        log_warn "Cargo がインストールされていません（Rust 開発環境が使用できません）"
     fi
 
     # Node.js (一部プラグイン用)
@@ -160,6 +232,20 @@ setup_tpm() {
     fi
 }
 
+# bash設定の再読み込み
+reload_bash() {
+    if [ -f "$HOME/.bashrc" ]; then
+        log_info "bash設定を再読み込み中..."
+        # 現在のシェルがbashの場合のみ再読み込み
+        if [ "$BASH" ]; then
+            source "$HOME/.bashrc"
+            log_info "bash設定が再読み込みされました"
+        else
+            log_info "bash以外のシェルを使用中です。新しいターミナルを開くか、手動で 'source ~/.bashrc' を実行してください"
+        fi
+    fi
+}
+
 # 推奨事項の表示
 show_recommendations() {
     log_info "セットアップ後の推奨事項:"
@@ -184,6 +270,23 @@ show_recommendations() {
             echo "  • vim風のキーバインドが設定されています"
         else
             echo "  • tmuxをインストールしてください: sudo apt install tmux"
+        fi
+        echo ""
+    fi
+
+    if [ -f "$DOTFILES_DIR/bash/bashrc" ]; then
+        echo "【bash】"
+        echo "  • 履歴共有機能が有効になっています"
+        echo "  • pyenv が設定されています（Python バージョン管理）"
+        echo "  • Cargo が設定されています（Rust 開発環境）"
+        echo "  • WSL2 サポートが含まれています"
+        if ! command -v pyenv &> /dev/null; then
+            echo "  • pyenv をインストールすることをお勧めします:"
+            echo "    curl https://pyenv.run | bash"
+        fi
+        if ! command -v cargo &> /dev/null; then
+            echo "  • Rust をインストールすることをお勧めします:"
+            echo "    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
         fi
         echo ""
     fi
@@ -216,6 +319,12 @@ main() {
     else
         echo "  ✗ tmux設定"
     fi
+
+    if [ -f "$DOTFILES_DIR/bash/bashrc" ]; then
+        echo "  ✓ bash設定"
+    else
+        echo "  ✗ bash設定"
+    fi
     echo ""
 
     # 依存関係チェック
@@ -224,6 +333,10 @@ main() {
     # 各設定のセットアップ
     setup_neovim
     setup_tmux
+    setup_bash
+
+    # bash設定の再読み込み
+    reload_bash
 
     # プラグインマネージャーのセットアップ
     setup_lazy
