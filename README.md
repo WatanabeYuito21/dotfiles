@@ -163,11 +163,26 @@ LSPサーバーをインストール（オプション）:
 :Mason
 ```
 
-## 📂 設定ファイル構成
+## 📂 設定ファイル構成 🔄
 
 ```
 dotfiles/
-├── nvim/                    # Neovim設定
+├── scripts/                 # セットアップスクリプト群 🆕
+│   ├── setup.sh            # メインセットアップスクリプト
+│   ├── lib/                # 共通ライブラリ 🆕
+│   │   ├── utils.sh        # ユーティリティ関数
+│   │   ├── logger.sh       # ログ出力機能
+│   │   └── backup.sh       # バックアップ機能
+│   ├── installers/         # 各種インストーラー 🆕
+│   │   ├── deps.sh         # 依存関係チェック
+│   │   ├── nvim.sh         # Neovim設定
+│   │   ├── tmux.sh         # tmux設定
+│   │   ├── bash.sh         # bash設定
+│   │   └── wsl.sh          # WSL設定
+│   └── post-install/       # ポストインストール 🆕
+│       ├── plugins.sh      # プラグインマネージャー
+│       └── recommendations.sh # 推奨事項表示
+├── nvim/                   # Neovim設定
 │   ├── init.lua            # メイン設定ファイル
 │   └── lua/
 │       ├── options.lua     # 基本オプション
@@ -181,13 +196,21 @@ dotfiles/
 │   └── plugins/           # TPMプラグイン（自動生成）
 ├── bash/                   # bash設定
 │   └── bashrc             # bash設定ファイル
-├── wsl/                    # WSL設定 🆕
+├── wsl/                    # WSL設定
 │   └── wsl.conf           # WSL設定ファイル
-├── setup.sh               # Linux/macOS/WSL用セットアップスクリプト
+├── setup.sh               # メインセットアップスクリプト（後方互換性）
 ├── setup.bat              # Windows用セットアップスクリプト（cmd）
 ├── setup.ps1              # Windows用セットアップスクリプト（PowerShell）
 └── README.md             # このファイル
 ```
+
+### 🆕 新しいモジュラー構成の利点
+
+1. **保守性向上**: 各機能が独立したファイルで管理
+2. **テスト容易性**: 個別機能のテストが可能
+3. **可読性**: コードが短く理解しやすい
+4. **デバッグ**: 問題箇所の特定が容易
+5. **拡張性**: 新機能の追加が簡単
 
 ## ⚙️ 必要な依存関係
 
@@ -274,6 +297,26 @@ tmux プラグインは [TPM](https://github.com/tmux-plugins/tpm) で管理さ�
 
 3. `Prefix + U` で更新、`Prefix + alt + u` でアンインストール
 
+### 新しいインストーラーの追加 🆕
+
+新しい設定（例：zsh）を追加する場合：
+
+1. **インストーラーファイルを作成**:
+   ```bash
+   # scripts/installers/zsh.sh を作成
+   ```
+
+2. **メインスクリプトに追加**:
+   ```bash
+   # scripts/setup.sh にsource文を追加
+   source "$SCRIPT_DIR/installers/zsh.sh"
+   ```
+
+3. **セットアップ関数を呼び出し**:
+   ```bash
+   # main()関数内で setup_zsh を呼び出し
+   ```
+
 ### bash設定の追加
 
 #### カスタムエイリアス
@@ -292,7 +335,7 @@ alias g='git'
 
 環境固有の設定は`~/.bashrc.local`に追加することをお勧めします（このファイルはgitignoreされます）。
 
-### WSL設定のカスタマイズ 🆕
+### WSL設定のカスタマイズ
 
 `wsl/wsl.conf`ファイルを編集してWSL動作をカスタマイズ:
 
@@ -383,6 +426,37 @@ git pull
 
 ## 🛠️ トラブルシューティング
 
+### セットアップスクリプト関連 🆕
+
+#### 改行コードエラー（Windows環境）
+
+```bash
+# エラー: /usr/bin/env: 'bash\r': No such file or directory
+# 解決方法:
+dos2unix setup.sh
+
+# または一括変換
+find scripts/ -name "*.sh" -type f -exec dos2unix {} \;
+```
+
+#### 実行権限エラー
+
+```bash
+# 実行権限を付与
+chmod +x setup.sh
+find scripts/ -name "*.sh" -type f -exec chmod +x {} \;
+```
+
+#### スクリプトが見つからない
+
+```bash
+# scripts/ディレクトリの存在確認
+ls -la scripts/
+
+# シンボリックリンクの確認
+ls -la setup.sh
+```
+
 ### Neovim関連
 
 #### プラグインが読み込まれない
@@ -448,7 +522,7 @@ curl https://pyenv.run | bash
 fix_wsl2_interop
 ```
 
-### WSL関連 🆕
+### WSL関連
 
 #### WSL設定が適用されない
 
@@ -565,7 +639,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.bashrc
 ```
 
-### WSL設定の初期セットアップ 🆕
+### WSL設定の初期セットアップ
 
 ```bash
 # WSL設定ディレクトリを作成
@@ -597,6 +671,51 @@ EOF
 sudo ./setup.sh
 ```
 
+## 🔧 開発者向け情報 🆕
+
+### スクリプトの拡張方法
+
+新しい設定ツール（例：fish shell）を追加する場合：
+
+1. **インストーラーファイルを作成**:
+   ```bash
+   # scripts/installers/fish.sh
+   #!/usr/bin/env bash
+   
+   setup_fish() {
+       setup_config "fish"
+   }
+   ```
+
+2. **メインスクリプトに統合**:
+   ```bash
+   # scripts/setup.sh に追加
+   source "$SCRIPT_DIR/installers/fish.sh"
+   
+   # main()関数内で呼び出し
+   setup_fish
+   ```
+
+### ログレベルの追加
+
+```bash
+# scripts/lib/logger.sh に追加
+log_debug() {
+    if [ "${DOTFILES_DEBUG:-}" ]; then
+        echo -e "\033[36m[DEBUG]\033[0m $1"
+    fi
+}
+```
+
+### テスト環境のセットアップ
+
+```bash
+# テスト用の一時ディレクトリでテスト
+export DOTFILES_TEST=1
+export DOTFILES_DIR="/tmp/test-dotfiles"
+./setup.sh
+```
+
 ## 📈 更新履歴
 
 - **v1.0**: 基本的なNeovim LSP + 補完 + フォーマッター構成
@@ -604,7 +723,12 @@ sudo ./setup.sh
 - **v1.2**: モジュール化された設定構造
 - **v1.3**: tmux設定の追加とTPM連携
 - **v1.4**: bash設定の追加（pyenv, Cargo, WSL2サポート, 履歴共有）
-- **v1.5**: WSL設定の追加（systemd有効化、ネットワーク設定、Interop設定） 🆕
+- **v1.5**: WSL設定の追加（systemd有効化、ネットワーク設定、Interop設定）
+- **v2.0**: セットアップスクリプトのモジュラー化 🆕
+  - scriptsディレクトリの導入
+  - 機能別ファイル分割
+  - 保守性・拡張性の大幅向上
+  - デバッグ・テストの容易化
 
 ## 📄 ライセンス
 
