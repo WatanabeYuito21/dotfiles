@@ -1,6 +1,6 @@
-# Neovim, tmux & bash Dotfiles
+# Neovim, tmux, bash & WSL Dotfiles
 
-個人用のNeovim・tmux・bash設定ファイルです。Lua設定でモダンなNeovim環境と効率的なtmux環境、カスタマイズされたbash環境を構築します。
+個人用のNeovim・tmux・bash・WSL設定ファイルです。Lua設定でモダンなNeovim環境と効率的なtmux環境、カスタマイズされたbash環境、最適化されたWSL環境を構築します。
 
 ## 🚀 機能
 
@@ -78,9 +78,26 @@
 - **WSL2 Interop修正**: `fix_wsl2_interop()` 関数でプロセス間通信を修正
 - **履歴共有**: `share_history()` 関数で複数セッション間の履歴同期
 
+### WSL設定 🆕
+
+#### 主要機能
+
+- **systemd有効化**: systemdによるサービス管理
+- **ネットワーク設定**: Windowsとの連携最適化
+- **Interop設定**: Windows実行ファイルへのアクセス
+- **自動マウント**: Windowsドライブの自動マウント
+
+#### 設定内容
+
+- systemdサポート
+- デフォルトユーザー設定
+- ホスト名生成の有効化
+- DNS設定の自動生成
+- Windows PATH の自動追加
+
 ## 📦 インストール
 
-### Linux/macOS環境
+### Linux/macOS/WSL環境
 
 ```bash
 # このリポジトリをクローン
@@ -89,7 +106,12 @@ git clone <your-repository-url> ~/dotfiles
 # セットアップスクリプトを実行
 cd ~/dotfiles
 chmod +x setup.sh
+
+# 通常実行（WSL設定以外）
 ./setup.sh
+
+# WSL環境でWSL設定も含める場合（sudo権限必要）
+sudo ./setup.sh
 
 # bash設定を反映（自動で実行されますが、手動でも可能）
 source ~/.bashrc
@@ -122,6 +144,17 @@ setup.bat
 
 **注意**: Windowsでシンボリックリンクを作成するには管理者権限が必要です。
 
+### WSL設定の反映
+
+WSL設定を変更した後は、WSLを再起動する必要があります：
+
+**PowerShell/コマンドプロンプトで実行：**
+```cmd
+wsl --shutdown
+```
+
+その後、WSLを再起動すれば新しい設定が適用されます。
+
 ### 共通の後処理
 
 LSPサーバーをインストール（オプション）:
@@ -148,7 +181,9 @@ dotfiles/
 │   └── plugins/           # TPMプラグイン（自動生成）
 ├── bash/                   # bash設定
 │   └── bashrc             # bash設定ファイル
-├── setup.sh               # Linux/macOS用セットアップスクリプト
+├── wsl/                    # WSL設定 🆕
+│   └── wsl.conf           # WSL設定ファイル
+├── setup.sh               # Linux/macOS/WSL用セットアップスクリプト
 ├── setup.bat              # Windows用セットアップスクリプト（cmd）
 ├── setup.ps1              # Windows用セットアップスクリプト（PowerShell）
 └── README.md             # このファイル
@@ -175,6 +210,11 @@ dotfiles/
 
 - **pyenv** (Python バージョン管理)
 - **Cargo/Rust** (Rust 開発環境)
+
+### WSL関連
+
+- **Windows Subsystem for Linux 2**
+- **sudo権限** (WSL設定ファイルの配置用)
 
 ### Windows推奨
 
@@ -252,6 +292,42 @@ alias g='git'
 
 環境固有の設定は`~/.bashrc.local`に追加することをお勧めします（このファイルはgitignoreされます）。
 
+### WSL設定のカスタマイズ 🆕
+
+`wsl/wsl.conf`ファイルを編集してWSL動作をカスタマイズ:
+
+```ini
+[boot]
+systemd=true
+command="service cron start"  # 起動時コマンド
+
+[user]
+default=yourusername
+
+[network]
+generateHosts=true
+generateResolvConf=true
+hostname=custom-hostname
+
+[interop]
+enabled=true
+appendWindowsPath=true
+
+[automount]
+enabled=true
+mountFsTab=false
+root=/mnt/
+options="metadata,umask=22,fmask=11"
+```
+
+#### 主要設定項目
+
+- **boot**: systemd有効化、起動時コマンド
+- **user**: デフォルトユーザー設定
+- **network**: DNS、ホスト名設定
+- **interop**: Windows実行ファイルアクセス
+- **automount**: Windowsドライブマウント設定
+
 ### tmux設定の追加
 
 tmux設定を管理対象に追加する場合:
@@ -273,7 +349,7 @@ cp /path/to/your/tmux.conf ~/dotfiles/tmux/
 ### 設定を更新した場合
 
 ```bash
-# Linux/macOS
+# Linux/macOS/WSL
 cd ~/dotfiles
 git add .
 git commit -m "Update config"
@@ -291,9 +367,12 @@ git push
 ### 他の端末で設定を同期
 
 ```bash
-# Linux/macOS
+# Linux/macOS/WSL
 cd ~/dotfiles
 git pull
+
+# 設定を再適用（必要に応じて）
+./setup.sh  # または sudo ./setup.sh (WSL設定含む)
 ```
 
 ```powershell
@@ -369,6 +448,56 @@ curl https://pyenv.run | bash
 fix_wsl2_interop
 ```
 
+### WSL関連 🆕
+
+#### WSL設定が適用されない
+
+1. **sudo権限でセットアップを実行**:
+
+   ```bash
+   sudo ./setup.sh
+   ```
+
+2. **WSL設定ファイルを手動で配置**:
+
+   ```bash
+   sudo cp ~/dotfiles/wsl/wsl.conf /etc/wsl.conf
+   ```
+
+3. **WSLを再起動**:
+
+   ```cmd
+   # PowerShell/コマンドプロンプトで実行
+   wsl --shutdown
+   ```
+
+#### systemdが動作しない
+
+1. WSL設定を確認:
+
+   ```bash
+   cat /etc/wsl.conf
+   ```
+
+2. systemdの状態を確認:
+
+   ```bash
+   systemctl status
+   ```
+
+#### setup.shでsudo権限エラーが発生
+
+```bash
+# 権限を確認
+sudo -l
+
+# sudoグループに属しているか確認
+groups $USER
+
+# 手動でWSL設定をコピー
+sudo cp ~/dotfiles/wsl/wsl.conf /etc/wsl.conf
+```
+
 ### Windows固有のトラブルシューティング
 
 #### シンボリックリンクが作成できない
@@ -436,6 +565,38 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.bashrc
 ```
 
+### WSL設定の初期セットアップ 🆕
+
+```bash
+# WSL設定ディレクトリを作成
+mkdir -p ~/dotfiles/wsl
+
+# 基本的なWSL設定ファイルを作成
+cat << 'EOF' > ~/dotfiles/wsl/wsl.conf
+[boot]
+systemd=true
+
+[user]
+default=watanabeyuito
+
+[network]
+generateHosts=true
+generateResolvConf=true
+
+[interop]
+enabled=true
+appendWindowsPath=true
+
+[automount]
+enabled=true
+root=/mnt/
+options="metadata,umask=22,fmask=11"
+EOF
+
+# セットアップスクリプトをsudo権限で実行
+sudo ./setup.sh
+```
+
 ## 📈 更新履歴
 
 - **v1.0**: 基本的なNeovim LSP + 補完 + フォーマッター構成
@@ -443,6 +604,7 @@ source ~/.bashrc
 - **v1.2**: モジュール化された設定構造
 - **v1.3**: tmux設定の追加とTPM連携
 - **v1.4**: bash設定の追加（pyenv, Cargo, WSL2サポート, 履歴共有）
+- **v1.5**: WSL設定の追加（systemd有効化、ネットワーク設定、Interop設定） 🆕
 
 ## 📄 ライセンス
 
