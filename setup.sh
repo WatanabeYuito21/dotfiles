@@ -2,8 +2,15 @@
 # test
 set -e
 
-DOTFILES_DIR="$HOME/dotfiles"
-CONFIG_DIR="$HOME/.config"
+# sudoで実行された場合、元のユーザーのホームディレクトリを使用
+if [ -n "$SUDO_USER" ]; then
+    REAL_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    DOTFILES_DIR="$REAL_HOME/dotfiles"
+    CONFIG_DIR="$REAL_HOME/.config"
+else
+    DOTFILES_DIR="$HOME/dotfiles"
+    CONFIG_DIR="$HOME/.config"
+fi
 
 # 色付きログ出力
 log_info() {
@@ -109,6 +116,74 @@ setup_home_config() {
     fi
 }
 
+# WSL環境検出
+is_wsl() {
+    [ -n "$WSL_DISTRO_NAME" ] || [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]
+}
+
+# WSL設定のセットアップ
+setup_wsl() {
+    if ! is_wsl; then
+        log_info "WSL環境ではないため、WSL設定をスキップします"
+        return 0
+    fi
+
+    local source_file="$DOTFILES_DIR/wsl/wsl.conf"
+    local target_file="/etc/wsl.conf"
+
+    log_info "WSL設定をセットアップ中..."
+    log_info "ソースファイル: $source_file"
+    log_info "ターゲットファイル: $target_file"
+
+    # ソースファイルの存在確認
+    if [ ! -f "$source_file" ]; then
+        log_warn "WSL設定ファイルが見つかりません: $source_file"
+        return 1
+    fi
+
+    # 既に root 権限で実行されている場合
+    if [ "$EUID" -eq 0 ]; then
+        # 既存ファイルのバックアップ
+        if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
+            local backup_name="${target_file}.backup.$(date +%Y%m%d_%H%M%S)"
+            mv "$target_file" "$backup_name"
+            log_warn "既存の $target_file を $backup_name にバックアップしました"
+        fi
+
+        # WSL設定ファイルをコピー
+        cp "$source_file" "$target_file"
+    else
+        # sudo権限の確認
+        if ! sudo -n true 2>/dev/null; then
+            log_warn "sudo権限が必要です。WSL設定のセットアップにはroot権限が必要です"
+            echo "WSL設定を手動でセットアップする場合:"
+            echo "  sudo cp $source_file $target_file"
+            return 1
+        fi
+
+        # 既存ファイルのバックアップ（sudo権限で）
+        if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
+            local backup_name="${target_file}.backup.$(date +%Y%m%d_%H%M%S)"
+            sudo mv "$target_file" "$backup_name"
+            log_warn "既存の $target_file を $backup_name にバックアップしました"
+        fi
+
+        # WSL設定ファイルをコピー
+        sudo cp "$source_file" "$target_file"
+    fi
+
+    # 結果を確認
+    if [ -f "$target_file" ]; then
+        log_info "WSL設定ファイルを配置しました:"
+        ls -la "$target_file"
+        log_info "設定を反映するにはWSLを再起動してください"
+        return 0
+    else
+        log_error "WSL設定ファイルの配置に失敗しました"
+        return 1
+    fi
+}
+
 # Neovim設定のセットアップ
 setup_neovim() {
     setup_config "nvim" || exit 1
@@ -123,14 +198,14 @@ setup_tmux() {
 setup_bash() {
     local source_file="$DOTFILES_DIR/bash/bashrc"
     local target_file="$HOME/.bashrc"
-    
+
     setup_home_config "bash" "$source_file" "$target_file"
-    
+
     # 追加の bash 設定ファイルがある場合も処理
     if [ -f "$DOTFILES_DIR/bash/bash_aliases" ]; then
         setup_home_config "bash_aliases" "$DOTFILES_DIR/bash/bash_aliases" "$HOME/.bash_aliases"
     fi
-    
+
     if [ -f "$DOTFILES_DIR/bash/bash_profile" ]; then
         setup_home_config "bash_profile" "$DOTFILES_DIR/bash/bash_profile" "$HOME/.bash_profile"
     fi
@@ -290,6 +365,15 @@ show_recommendations() {
         fi
         echo ""
     fi
+
+    if is_wsl && [ -f "$DOTFILES_DIR/wsl/wsl.conf" ]; then
+        echo "【WSL】"
+        echo "  • WSL設定が適用されました"
+        echo "  • 設定を完全に反映するには以下を実行してください:"
+        echo "    PowerShell/コマンドプロンプト: wsl --shutdown"
+        echo "    その後、WSLを再起動してください"
+        echo ""
+    fi
 }
 
 # メイン実行部分
@@ -299,6 +383,11 @@ main() {
     # 現在のディレクトリを確認
     log_info "現在のディレクトリ: $(pwd)"
     log_info "DOTFILES_DIR: $DOTFILES_DIR"
+
+    # WSL環境の検出
+    if is_wsl; then
+        log_info "WSL環境を検出しました: $WSL_DISTRO_NAME"
+    fi
 
     # dotfilesディレクトリの存在確認
     if [ ! -d "$DOTFILES_DIR" ]; then
@@ -325,6 +414,12 @@ main() {
     else
         echo "  ✗ bash設定"
     fi
+
+    if is_wsl && [ -f "$DOTFILES_DIR/wsl/wsl.conf" ]; then
+        echo "  ✓ WSL設定"
+    elif is_wsl; then
+        echo "  ✗ WSL設定"
+    fi
     echo ""
 
     # 依存関係チェック
@@ -334,6 +429,7 @@ main() {
     setup_neovim
     setup_tmux
     setup_bash
+    setup_wsl
 
     # bash設定の再読み込み
     reload_bash
