@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# WSL設定のセットアップ
+# ユーザー空間でのWSL設定管理
 setup_wsl() {
     if ! is_wsl; then
         log_info "WSL環境ではないため、WSL設定をスキップします"
@@ -8,11 +8,11 @@ setup_wsl() {
     fi
 
     local source_file="$DOTFILES_DIR/wsl/wsl.conf"
-    local target_file="/etc/wsl.conf"
+    local user_wsl_dir="$HOME/.wsl"
+    local user_wsl_conf="$user_wsl_dir/wsl.conf"
+    local setup_script="$user_wsl_dir/apply-wsl-config.sh"
 
-    log_info "WSL設定をセットアップ中..."
-    log_info "ソースファイル: $source_file"
-    log_info "ターゲットファイル: $target_file"
+    log_info "WSL設定をユーザー空間で準備中..."
 
     # ソースファイルの存在確認
     if [ ! -f "$source_file" ]; then
@@ -20,45 +20,73 @@ setup_wsl() {
         return 1
     fi
 
-    # 既に root 権限で実行されている場合
-    if [ "$EUID" -eq 0 ]; then
-        # 既存ファイルのバックアップ
-        if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
-            local backup_name="${target_file}.backup.$(date +%Y%m%d_%H%M%S)"
-            mv "$target_file" "$backup_name"
-            log_warn "既存の $target_file を $backup_name にバックアップしました"
-        fi
+    # ユーザー用WSLディレクトリを作成
+    mkdir -p "$user_wsl_dir"
 
-        # WSL設定ファイルをコピー
-        cp "$source_file" "$target_file"
-    else
-        # sudo権限の確認
-        if ! sudo -n true 2>/dev/null; then
-            log_warn "sudo権限が必要です。WSL設定のセットアップにはroot権限が必要です"
-            echo "WSL設定を手動でセットアップする場合:"
-            echo "  sudo cp $source_file $target_file"
-            return 1
-        fi
+    # WSL設定ファイルをユーザー空間にコピー
+    cp "$source_file" "$user_wsl_conf"
+    log_info "WSL設定ファイルをユーザー空間にコピーしました: $user_wsl_conf"
 
-        # 既存ファイルのバックアップ（sudo権限で）
-        if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
-            local backup_name="${target_file}.backup.$(date +%Y%m%d_%H%M%S)"
-            sudo mv "$target_file" "$backup_name"
-            log_warn "既存の $target_file を $backup_name にバックアップしました"
-        fi
+    # WSL設定適用スクリプトを生成
+    cat > "$setup_script" << 'EOF'
+#!/usr/bin/env bash
 
-        # WSL設定ファイルをコピー
-        sudo cp "$source_file" "$target_file"
-    fi
+# WSL設定適用スクリプト
+# このスクリプトは管理者権限で実行する必要があります
 
-    # 結果を確認
-    if [ -f "$target_file" ]; then
-        log_info "WSL設定ファイルを配置しました:"
-        ls -la "$target_file"
-        log_info "設定を反映するにはWSLを再起動してください"
-        return 0
-    else
-        log_error "WSL設定ファイルの配置に失敗しました"
-        return 1
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_FILE="$SCRIPT_DIR/wsl.conf"
+TARGET_FILE="/etc/wsl.conf"
+
+echo "WSL設定を適用中..."
+echo "ソース: $SOURCE_FILE"
+echo "ターゲット: $TARGET_FILE"
+
+# root権限チェック
+if [ "$EUID" -ne 0 ]; then
+    echo "エラー: このスクリプトは管理者権限で実行する必要があります"
+    echo "使用方法: sudo $0"
+    exit 1
+fi
+
+# 既存ファイルのバックアップ
+if [ -f "$TARGET_FILE" ]; then
+    BACKUP_NAME="${TARGET_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+    mv "$TARGET_FILE" "$BACKUP_NAME"
+    echo "既存の設定を $BACKUP_NAME にバックアップしました"
+fi
+
+# 設定ファイルをコピー
+cp "$SOURCE_FILE" "$TARGET_FILE"
+echo "WSL設定ファイルを配置しました"
+
+# パーミッション設定
+chmod 644 "$TARGET_FILE"
+
+echo "完了！WSLを再起動して設定を反映してください:"
+echo "  PowerShell/コマンドプロンプト: wsl --shutdown"
+EOF
+
+    chmod +x "$setup_script"
+
+    # .bashrcに便利なエイリアスを追加（既に存在しない場合のみ）
+    add_wsl_alias "$setup_script"
+
+    log_info "WSL設定の準備が完了しました"
+    return 0
+}
+
+# .bashrcにWSL設定適用エイリアスを追加
+add_wsl_alias() {
+    local setup_script="$1"
+    local bashrc_file="$HOME/.bashrc"
+    
+    if [ -f "$bashrc_file" ] && ! grep -q "apply-wsl-config" "$bashrc_file"; then
+        echo "" >> "$bashrc_file"
+        echo "# WSL設定適用エイリアス（dotfilesセットアップで自動追加）" >> "$bashrc_file"
+        echo "alias apply-wsl-config='sudo \"$setup_script\"'" >> "$bashrc_file"
+        log_info "便利なエイリアス 'apply-wsl-config' を .bashrc に追加しました"
     fi
 }

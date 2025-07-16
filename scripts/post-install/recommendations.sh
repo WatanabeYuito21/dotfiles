@@ -45,12 +45,27 @@ show_recommendations() {
         echo ""
     fi
 
-    if is_wsl && [ -f "$DOTFILES_DIR/wsl/wsl.conf" ]; then
-        echo "【WSL】"
-        echo "  • WSL設定が適用されました"
-        echo "  • 設定を完全に反映するには以下を実行してください:"
-        echo "    PowerShell/コマンドプロンプト: wsl --shutdown"
-        echo "    その後、WSLを再起動してください"
-        echo ""
-    fi
+    if is_wsl && [ -f "$HOME/.wsl/wsl.conf" ]; then
+              echo "【WSL】"
+              echo "  ・ WSL設定ファイルが準備されました"
+              echo "  ・ 以下のいずれかの方法で設定を適用してください:"
+              echo ""
+              echo "    方法1: エイリアスを使用（推奨）"
+              echo "      apply-wsl-config"
+              echo ""
+              echo "    方法2: スクリプトを直接実行"
+              echo "      sudo $HOME/.wsl/apply-wsl-config.sh"
+              echo ""
+              echo "    方法3: 手動でコピー"
+              echo "      sudo cp $HOME/.wsl/wsl.conf /etc/wsl.conf"
+              echo ""
+              echo "  ・ 設定適用後はWSLを再起動してください:"
+              echo "    PowerShell/コマンドプロンプト: wsl --shutdown"
+              echo ""
+          elif is_wsl && [ -f "$DOTFILES_DIR/wsl/wsl.conf" ]; then
+              echo "【WSL】"
+              echo "  ・ WSL設定ファイルが見つかりましたが、準備されていません"
+              echo "  ・ セットアップスクリプトを再実行してください"
+              echo ""
+          fi
 }

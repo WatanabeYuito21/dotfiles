@@ -170,3 +170,6 @@ PROMPT_COMMAND='share_history'
 # bashのプロセスを終了する時に、メモリ上の履歴を履歴ファイルに追記する、という動作を停止する
 # （history -aによって代替されるため）
 shopt -u histappend
+
+# WSL設定適用エイリアス（dotfilesセットアップで自動追加）
+alias apply-wsl-config='sudo "/home/watanabeyuito/.wsl/apply-wsl-config.sh"'
