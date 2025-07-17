@@ -99,3 +99,11 @@ cmd('highlight NormalSB ctermbg=none')
 -- visual mode のハイライト設定
 cmd('highlight visual guibg=#455354 guifg=none')
 cmd('highlight visualNOS guibg=#455354 guifg=none')
+
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+})

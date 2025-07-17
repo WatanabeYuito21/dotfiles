@@ -48,6 +48,19 @@ end
 if vim.fn.executable('rust-analyzer') == 1 then
     lspconfig.rust_analyzer.setup({
         capabilities = capabilities,
+        settings = {
+            ['rust-analyzer'] = {
+                checkOnSave = {
+                    command = "clippy",
+                },
+                cargo = {
+                    allFeatures = true,
+                },
+                procMacro = {
+                    enable = true,
+                },
+            },
+        },
     })
 end
 
