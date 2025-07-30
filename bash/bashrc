@@ -173,3 +173,35 @@ shopt -u histappend
 
 # WSL設定適用エイリアス（dotfilesセットアップで自動追加）
 alias apply-wsl-config='sudo "/home/watanabeyuito/.wsl/apply-wsl-config.sh"'
+#
+# =====================================
+# X11/DISPLAY設定（環境別対応）
+# =====================================
+
+# WSL環境での自動DISPLAY設定
+if [[ -n "$WSL_DISTRO_NAME" ]]; then
+    # WSL2の場合：Windows HostのIPを動的に取得
+    if [[ $(uname -r) =~ microsoft ]]; then
+        # WSL2: Windows HostのIPアドレスを取得
+        export DISPLAY=$(ip route show default | awk '{print $3}'):0.0
+ 
+        # フォールバック：デフォルトルートが取得できない場合
+        if [[ -z "$DISPLAY" || "$DISPLAY" == ":0.0" ]]; then
+            export DISPLAY=10.255.255.254:0.0
+        fi
+    else
+        # WSL1の場合
+        export DISPLAY=localhost:0.0
+    fi
+
+    # WSL2 Interop修正を実行
+    fix_wsl2_interop
+elif [[ -n "$SSH_CONNECTION" ]]; then
+    # SSH接続時はX11フォワーディングの設定をそのまま使用
+    # DISPLAYは変更しない（SSHが自動設定）
+    :
+else
+    # ネイティブLinux環境では通常設定をそのまま使用
+    # DISPLAYは変更しない
+    :
+fi
