@@ -173,7 +173,7 @@ shopt -u histappend
 
 # WSL設定適用エイリアス（dotfilesセットアップで自動追加）
 alias apply-wsl-config='sudo "/home/watanabeyuito/.wsl/apply-wsl-config.sh"'
-#
+
 # =====================================
 # X11/DISPLAY設定（環境別対応）
 # =====================================
@@ -186,6 +186,9 @@ if [[ -n "$WSL_DISTRO_NAME" ]]; then
         export DISPLAY=$(ip route show default | awk '{print $3}'):0.0
         # WSL2: WSL内部のGUI機能を利用
         export DISPLAY=:0
+        # Wsl2: 日本語化
+        export LANG=ja_JP.UTF-8
+        export LC_ALL=ja_JP.UTF-8
  
         # フォールバック：デフォルトルートが取得できない場合
         if [[ -z "$DISPLAY" || "$DISPLAY" == ":0.0" ]]; then
@@ -207,3 +210,6 @@ else
     # DISPLAYは変更しない
     :
 fi
+export LANG=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
+
