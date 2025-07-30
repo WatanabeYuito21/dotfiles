@@ -184,6 +184,8 @@ if [[ -n "$WSL_DISTRO_NAME" ]]; then
     if [[ $(uname -r) =~ microsoft ]]; then
         # WSL2: Windows HostのIPアドレスを取得
         export DISPLAY=$(ip route show default | awk '{print $3}'):0.0
+        # WSL2: WSL内部のGUI機能を利用
+        export DISPLAY=:0
  
         # フォールバック：デフォルトルートが取得できない場合
         if [[ -z "$DISPLAY" || "$DISPLAY" == ":0.0" ]]; then
