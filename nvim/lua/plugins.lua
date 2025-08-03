@@ -155,7 +155,7 @@ M.ai_plugins = {
                 ['.'] = false,
             }
         end,
-    }
+    },
 }
 
 -- LSP関連プラグイン
