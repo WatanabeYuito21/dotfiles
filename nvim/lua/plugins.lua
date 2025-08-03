@@ -120,6 +120,44 @@ M.formatter_plugins = {
     },
 }
 
+--- Copilot関連
+M.ai_plugins = {
+    {
+        'github/copilot.vim',
+        event = 'InsertEnter',
+        config = function()
+            -- Copilotの基本設定
+            vim.g.copilog_no_tab_map = true
+            vim.g.copilot_assume_mapped = true
+
+            -- キーマップ設定
+            vim.api.nvim_set_keymap('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
+                expr = true,
+                silent = true,
+                script = true,
+                replace_keycodes = false
+            })
+
+            -- その他便利なキーマップ
+            vim.api.nvim_set_keymap('i', '<C-L>', '<Plug>(copilot-accept-word)', { silent = true })
+            vim.api.nvim_set_keymap('i', '<C-K>', '<Plug>(copilot-previous)', { silent = true })
+            vim.api.nvim_set_keymap('i', '<C-N>', '<Plug>(copilot-next)', { silent = true })
+            vim.api.nvim_set_keymap('i', '<C-D>', '<Plug>(copilot-dismiss)', { silent = true })
+
+            -- Copilotを無効にするファイルタイプ
+            vim.g.copilot_filetypes = {
+                ['*'] = ture,
+                gitcommit = false,
+                gitrebase = false,
+                hgcommit = false,
+                svn = false,
+                cvs = false,
+                ['.'] = false,
+            }
+        end,
+    }
+}
+
 -- LSP関連プラグイン
 M.lsp_plugins = {
     -- Mason: LSPサーバー管理
@@ -174,6 +212,7 @@ function M.get_plugins()
         M.file_plugins,
         M.markdown_plugins,
         M.formatter_plugins,
+        M.ap_plugins,
         M.lsp_plugins,
     }) do
         vim.list_extend(all_plugins, category)
