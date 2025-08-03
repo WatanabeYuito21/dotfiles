@@ -127,7 +127,7 @@ M.ai_plugins = {
         event = 'InsertEnter',
         config = function()
             -- Copilotの基本設定
-            vim.g.copilog_no_tab_map = true
+            vim.g.copilot_no_tab_map = true
             vim.g.copilot_assume_mapped = true
 
             -- キーマップ設定
@@ -146,7 +146,7 @@ M.ai_plugins = {
 
             -- Copilotを無効にするファイルタイプ
             vim.g.copilot_filetypes = {
-                ['*'] = ture,
+                ['*'] = true,
                 gitcommit = false,
                 gitrebase = false,
                 hgcommit = false,
@@ -212,7 +212,7 @@ function M.get_plugins()
         M.file_plugins,
         M.markdown_plugins,
         M.formatter_plugins,
-        M.ap_plugins,
+        M.ai_plugins,
         M.lsp_plugins,
     }) do
         vim.list_extend(all_plugins, category)
