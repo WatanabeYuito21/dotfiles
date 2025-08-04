@@ -156,6 +156,125 @@ M.ai_plugins = {
             }
         end,
     },
+
+    -- Copilot Chat
+    {
+        'CopilotC-Nvim/CopilotChat.nvim',
+        branch = 'canary',
+        dependencies = {
+            'github/copilot.vim',
+            'nvim-lua/plenary.nvim',
+        },
+        config = function()
+            require('CopilotChat').setup({
+                debug = false, -- デバッグモード
+
+                -- プロンプト設定
+                prompts = {
+                    Explain = {
+                        prompt = '/COPILOT_EXPLAIN 選択されたコードを日本語で説明してください',
+                        mapping = '<leader>ce',
+                        description = 'コードの説明',
+                    },
+                    Review = {
+                        prompt = '/COPILOT_REVIEW 選択されたコードをレビューし、改善提案を日本語でしてください',
+                        mapping = '<leader>cr',
+                        description = 'コードレビュー',
+                    },
+                    Fix = {
+                        prompt = '/COPILOT_GENERATE このコードにバグがある場合は修正してください',
+                        mapping = '<leader>cf',
+                        description = 'バグ修正',
+                    },
+                    Optimize = {
+                        prompt = '/COPILOT_GENERATE このコードを最適化してください',
+                        mapping = '<leader>co',
+                        description = 'コード最適化',
+                    },
+                    Docs = {
+                        prompt = '/COPILOT_GENERATE 選択されたコードに適切なドキュメントコメントを追加してください',
+                        mapping = '<leader>cd',
+                        description = 'ドキュメント生成',
+                    },
+                    Tests = {
+                        prompt = '/COPILOT_GENERATE 選択されたコードのテストケースを生成してください',
+                        mapping = '<leader>ct',
+                        description = 'テスト生成',
+                    },
+                },
+
+                -- 自動トリガー設定
+                auto_follow_cursor = false,
+                auto_insert_mode = false,
+                clear_chat_on_new_prompt = false,
+
+                -- ウィンドウ設定
+                window = {
+                    layout = 'vertical', -- 'vertical', 'horizontal', 'float'
+                    width = 0.5,
+                    height = 0.5,
+                    relative = 'editor',
+                },
+            })
+        end,
+        keys = {
+            -- チャット関連
+            {
+                '<leader>cc',
+                '<cmd>CopilotChat<cr>',
+                desc = 'Copilot Chat を開く',
+            },
+            {
+                '<leader>ccq',
+                function()
+                    local input = vim.fn.input('Quick Chat: ')
+                    if input ~= '' then
+                        require('CopilotChat').ask(input, { selection = require('CopilotChat.select').buffer })
+                    end
+                end,
+                desc = 'クイックチャット',
+            },
+            {
+                '<leader>cch',
+                '<cmd>CopilotChatHistory<cr>',
+                desc = 'チャット履歴',
+            },
+            {
+                '<leader>ccr',
+                '<cmd>CopilotChatReset<cr>',
+                desc = 'チャットリセット',
+            },
+
+            -- 選択範囲でのチャット
+            {
+                '<leader>ccv',
+                ':<C-u>CopilotChatVisual<cr>',
+                mode = 'v',
+                desc = '選択範囲でチャット',
+            },
+            {
+                '<leader>ccx',
+                ':<C-u>CopilotChatInPlace<cr>',
+                mode = 'v',
+                desc = 'インプレース編集',
+            },
+        },
+    },
+
+    -- より高機能なAIアシスタント
+    {
+        'Exafunction/codeium.nvim',
+        enabled = false, -- 必要に応じてtrueに変更
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'hrsh7th/nvim-cmp',
+        },
+        config = function()
+            require('codeium').setup({
+                enable_chat = true,
+            })
+        end,
+    },
 }
 
 -- LSP関連プラグイン
