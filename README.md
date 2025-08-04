@@ -185,6 +185,14 @@ setup.bat
 | `Ctrl+N` | 次の提案     |
 | `Ctrl+D` | 提案拒否     |
 
+### Copilot管理
+
+| キー          | 動作                  |
+| ------------- | --------------------- |
+| `<Leader>cpe` | Copilot有効化         |
+| `<Leader>cpd` | Copilot無効化         |
+| `<Leader>cps` | Copilotステータス確認 |
+
 ### CopilotChat
 
 | キー         | 動作                     |
@@ -204,6 +212,52 @@ setup.bat
 - **ディスプレイ設定**: 自動X11フォワーディング
 - **日本語ロケール**: 完全UTF-8日本語対応
 - **Interop修正**: 自動WSL interop修復機能
+
+## 🤖 Copilot使用方法
+
+### 基本的な使い方
+
+1. **Copilotの有効化**:
+
+   ```
+   <Leader>cpe または :Copilot enable
+   ```
+
+2. **Copilotの無効化**:
+
+   ```
+   <Leader>cpd または :Copilot disable
+   ```
+
+3. **ステータス確認**:
+   ```
+   <Leader>cps または :Copilot status
+   ```
+
+### インサートモードでの補完
+
+- `Ctrl+J`: 提案を受け入れる
+- `Ctrl+L`: 単語のみ受け入れる
+- `Ctrl+K`: 前の提案
+- `Ctrl+N`: 次の提案
+- `Ctrl+D`: 提案を拒否
+
+### CopilotChatの使用
+
+- `<Leader>cc`: チャットウィンドウを開く
+- `<Leader>ccq`: クイックチャット（選択範囲に対して）
+- `<Leader>ccv`: 選択範囲でチャット（ビジュアルモード）
+- `<Leader>cch`: チャット履歴を表示
+- `<Leader>ccr`: チャットをリセット
+
+### 専用プロンプト（日本語対応）
+
+- `<Leader>ce`: コードの説明を日本語で要求
+- `<Leader>cr`: コードレビューを日本語で要求
+- `<Leader>cf`: バグ修正提案
+- `<Leader>co`: コード最適化提案
+- `<Leader>cd`: ドキュメント生成
+- `<Leader>ct`: テストコード生成
 
 ## 🛠️ カスタマイズ
 
@@ -303,3 +357,7 @@ source ~/.bashrc
 ## 🤝 貢献
 
 フォークして独自のニーズに合わせてカスタマイズしてください。改善のためのプルリクエストも歓迎します！
+
+## 📄 ライセンス
+
+MIT License - 自由に使用・改変してください。
