@@ -1,5 +1,4 @@
 -- ~/.config/nvim/lua/lsp-config.lua
--- local lspconfig = require('lspconfig')
 
 -- nvim-cmpとの連携
 local capabilities = vim.lsp.protocol.make_client_capabilities()
