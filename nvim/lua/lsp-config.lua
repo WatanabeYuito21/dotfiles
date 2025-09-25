@@ -1,5 +1,5 @@
 -- ~/.config/nvim/lua/lsp-config.lua
-local lspconfig = require('lspconfig')
+-- local lspconfig = require('lspconfig')
 
 -- nvim-cmpとの連携
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -14,7 +14,6 @@ local conform_ok, conform = pcall(require, 'conform')
 -- LSPサーバーの設定（手動で各サーバーを設定）
 -- Lua
 if vim.fn.executable('lua-language-server') == 1 then
-    -- lspconfig.lua_ls.setup({
     vim.lsp.config.lua_ls = {
         capabilities = capabilities,
         settings = {
@@ -34,14 +33,12 @@ end
 -- Python
 if vim.fn.executable('pyright') == 1 or vim.fn.executable('pyright-langserver') == 1 then
     vim.lsp.config.pyright = {
-    -- lspconfig.pyright.setup({
         capabilities = capabilities,
     }
 end
 
 -- TypeScript/JavaScript
 if vim.fn.executable('typescript-language-server') == 1 then
-    -- lspconfig.ts_ls.setup({
     vim.lsp.config.ts_ls = {
         capabilities = capabilities,
     }
@@ -49,7 +46,6 @@ end
 
 -- Rust
 if vim.fn.executable('rust-analyzer') == 1 then
-    -- lspconfig.rust_analyzer.setup({
     vim.lsp.config.rust_analyzer = {
         capabilities = capabilities,
         settings = {
@@ -70,7 +66,6 @@ end
 
 -- Go
 if vim.fn.executable('gopls') == 1 then
-    -- lspconfig.gopls.setup({
     vim.lsp.config.gopls = {
         capabilities = capabilities,
     }
@@ -78,7 +73,6 @@ end
 
 -- PowerShell
 if vim.fn.executable('pwsh') == 1 then
-    -- lspconfig.powershell_es.setup({
     vim.lsp.config.powershell_es = {
         capabilities = capabilities,
     }
@@ -86,7 +80,6 @@ end
 
 -- Markdown
 if vim.fn.executable('marksman') == 1 then
-    -- lspconfig.marksman.setup({
     vim.lsp.config.marksman = {
         capabilities = capabilities,
     }
