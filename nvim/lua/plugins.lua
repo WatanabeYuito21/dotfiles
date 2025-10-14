@@ -168,6 +168,7 @@ M.ai_plugins = {
         config = function()
             require('CopilotChat').setup({
                 debug = false, -- デバッグモード
+                show_help = 'yes',
 
                 -- プロンプト設定
                 prompts = {
