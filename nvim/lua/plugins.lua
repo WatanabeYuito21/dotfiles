@@ -211,10 +211,11 @@ M.ai_plugins = {
 
                 -- ウィンドウ設定
                 window = {
-                    layout = 'vertical', -- 'vertical', 'horizontal', 'float'
-                    width = 0.5,
-                    height = 0.5,
+                    layout = 'float', -- 'vertical', 'horizontal', 'float'
+                    width = 80,
+                    height = 20,
                     relative = 'editor',
+                    border = 'rounded', -- 'single', 'double', 'rounded', 'solid'
                 },
             })
         end,
