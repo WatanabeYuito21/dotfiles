@@ -256,7 +256,15 @@ M.ai_plugins = {
             },
             {
                 '<leader>ccx',
-                ':<C-u>CopilotChatInPlace<cr>',
+                -- ':<C-u>CopilotChatInPlace<cr>',
+                function()
+                    local input = vim.fn.input('選択範囲を修正：')
+                    if input ~= '' then
+                        require('CopilotChat').ask(input, {
+                            selection = require('CopilotChat.select').visual
+                        })
+                    end
+                end,
                 mode = 'v',
                 desc = 'インプレース編集',
             },
