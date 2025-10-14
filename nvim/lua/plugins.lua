@@ -255,6 +255,13 @@ M.ai_plugins = {
                 desc = '選択範囲でチャット',
             },
             {
+                '<leader>ccy'
+                function()
+                    require('CopilotChat').yank()
+                end,
+                desc = 'チャット結果をヤンク'
+            },
+            {
                 '<leader>ccx',
                 -- ':<C-u>CopilotChatInPlace<cr>',
                 function()
