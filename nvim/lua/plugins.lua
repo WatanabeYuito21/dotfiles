@@ -255,11 +255,11 @@ M.ai_plugins = {
                 desc = '選択範囲でチャット',
             },
             {
-                '<leader>ccy'
+                '<leader>ccy',
                 function()
                     require('CopilotChat').yank()
                 end,
-                desc = 'チャット結果をヤンク'
+                desc = 'チャット結果をヤンク',
             },
             {
                 '<leader>ccx',
