@@ -64,7 +64,7 @@ opt.laststatus = 2
 opt.backspace = { 'indent', 'eol', 'start' }
 
 -- 背景色設定
-opt.background = dark
+opt.background = 'dark'
 
 -- クリップボード設定
 opt.clipboard = "unnamedplus"
@@ -74,10 +74,12 @@ opt.splitbelow = true
 opt.splitright = true
 
 -- swapfile 出力無効化
-cmd('set noswapfile')
+-- cmd('set noswapfile')
+opt.swapfile = false
 
 -- Backupfile 出力無効化
-cmd('set nobackup')
+-- cmd('set nobackup')
+opt.backup = false
 
 -- シンタックスハイライト有効化
 cmd('syntax on')
