@@ -1,0 +1,3 @@
+title: {{_title_}}
+date: {{_date_}}
+tags: []
