@@ -8,6 +8,7 @@
 - **🖥️ Terminal**: セッション永続化対応Tmux
 - **✏️ Editor**: LSP・自動補完・AI支援付きNeovim
 - **🤖 AI統合**: GitHub Copilot & CopilotChat（日本語プロンプト対応）
+- **📝 メモ機能**: memolist.vim によるテキストメモ管理
 - **🏠 WSL2最適化**: Windows環境との完全統合
 - **🌍 多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
 
@@ -18,34 +19,41 @@ dotfiles/
 ├── bash/
 │   └── bashrc              # 強化されたBash設定
 ├── tmux/
-│   ├── tmux.conf          # プラグイン対応Tmux設定
-│   └── plugins/           # Tmuxプラグイン群
+│   └── tmux.conf           # プラグイン対応Tmux設定
 ├── nvim/
-│   ├── init.lua           # Neovim エントリーポイント
+│   ├── init.lua            # Neovim エントリーポイント
 │   ├── lua/
-│   │   ├── options.lua    # エディタオプション
-│   │   ├── keymaps.lua    # キーマッピング
-│   │   ├── plugins.lua    # lazy.nvimプラグイン管理
-│   │   ├── lsp-config.lua # 言語サーバー設定
-│   │   ├── cmp-config.lua # 自動補完設定
+│   │   ├── options.lua     # エディタオプション
+│   │   ├── keymaps.lua     # キーマッピング
+│   │   ├── plugins.lua     # lazy.nvimプラグイン管理
+│   │   ├── lsp-config.lua  # 言語サーバー設定
+│   │   ├── cmp-config.lua  # 自動補完設定
 │   │   └── conform-config.lua # コードフォーマット設定
-│   └── colors/molokai.vim # カラースキーム
+│   ├── colors/molokai.vim  # カラースキーム
+│   └── pack/github/start/  # Copilot.vim
 ├── wsl/
-│   └── wsl.conf           # WSL設定
-└── scripts/               # インストール・セットアップスクリプト
+│   └── wsl.conf            # WSL設定
+├── scripts/
+│   ├── installers/         # インストーラスクリプト群
+│   ├── lib/                # ユーティリティライブラリ
+│   └── post-install/       # インストール後処理
+├── setup.sh                # Linux/WSLセットアップスクリプト
+├── setup.ps1               # PowerShellセットアップスクリプト
+└── setup.bat               # Windowsバッチセットアップスクリプト
 ```
 
 ## 🎯 特徴的な設定
 
 ### Bash設定
 
-- **共有履歴**: 全ターミナル間でコマンド履歴を共有
+- **共有履歴**: 全ターミナル間でリアルタイムコマンド履歴共有
 - **WSL2統合**: 自動interop修正・ディスプレイ設定
 - **開発ツール統合**:
   - Python (pyenv)
   - Rust (cargo)
   - Node.js (nvm)
 - **日本語環境**: UTF-8ロケール完全対応
+- **便利なエイリアス**: WSL設定適用コマンドなど
 
 ### Tmux設定
 
@@ -54,17 +62,54 @@ dotfiles/
 - **セッション永続化**: 自動保存・復元 (tmux-resurrect/continuum)
 - **モダンUI**: カスタムステータスバー
 - **マウス対応**: フル統合マウスサポート
+- **プラグイン管理**: TPM (Tmux Plugin Manager)
 
 ### Neovim設定
 
-- **プラグイン管理**: lazy.nvim による高速起動
-- **LSP対応**: 多言語サーバー自動設定
-- **AI統合**:
-  - GitHub Copilot コード補完
-  - CopilotChat 対話型AI支援（日本語対応）
-- **自動フォーマット**: 保存時自動フォーマット (conform.nvim)
-- **ファイル探索**: Neo-tree統合
-- **シンタックスハイライト**: Treesitter対応
+#### プラグイン管理
+
+- **lazy.nvim**: 高速起動・遅延読み込み対応
+
+#### UI・表示
+
+- **lualine.nvim**: モダンなステータスライン (Molokaiテーマ)
+- **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
+- **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
+- **molokai**: カラースキーム
+
+#### エディタ機能
+
+- **Comment.nvim**: 高速コメント切り替え
+- **treesj**: 構造的な分割・結合機能
+- **markdown-preview.nvim**: Markdownプレビュー機能
+- **memolist.vim**: テキストメモ管理システム
+  - `~/Documents/memolist`にメモを保存
+  - Neo-treeと統合したリスト表示
+  - タイムスタンプ付きファイル名
+
+#### LSP・補完
+
+- **nvim-lspconfig**: 多言語LSP対応
+- **mason.nvim**: LSPサーバー自動管理
+- **nvim-cmp**: 強力な自動補完エンジン
+  - LSP補完
+  - バッファ補完
+  - パス補完
+  - スニペット補完 (LuaSnip)
+
+#### フォーマッター
+
+- **conform.nvim**: 保存時自動フォーマット
+  - 言語別フォーマッター設定
+  - LSPフォールバック対応
+
+#### AI支援
+
+- **GitHub Copilot**: リアルタイムコード補完
+- **CopilotChat.nvim**: 対話型AI支援（日本語対応）
+  - コード説明・レビュー
+  - バグ修正・最適化提案
+  - ドキュメント・テスト生成
 
 ### 対応言語・ツール
 
@@ -84,16 +129,14 @@ dotfiles/
 
 ```bash
 # このリポジトリをクローン
-git clone <your-repository-url> ~/dotfiles
+git clone https://github.com/WatanabeYuito21/dotfiles.git ~/dotfiles
 
 # セットアップスクリプトを実行
 cd ~/dotfiles
 chmod +x setup.sh
-
-# 通常実行（sudoなしで実行可能）
 ./setup.sh
 
-# bash設定を反映（自動実行されますが、手動でも可能）
+# bash設定を反映
 source ~/.bashrc
 
 # Neovimを起動してプラグインの自動インストールを確認
@@ -105,14 +148,11 @@ nvim
 WSLの場合、追加セットアップが必要です：
 
 ```bash
-# 方法1: エイリアスを使用（推奨）
+# エイリアスを使用（推奨）
 apply-wsl-config
 
-# 方法2: スクリプトを直接実行
+# または、スクリプトを直接実行
 sudo ~/.wsl/apply-wsl-config.sh
-
-# 方法3: 手動でコピー
-sudo cp ~/.wsl/wsl.conf /etc/wsl.conf
 ```
 
 設定適用後はWSLを再起動してください：
@@ -129,7 +169,7 @@ wsl --shutdown
 
 ```powershell
 # このリポジトリをクローン
-git clone <your-repository-url> $env:USERPROFILE\dotfiles
+git clone https://github.com/WatanabeYuito21/dotfiles.git $env:USERPROFILE\dotfiles
 
 # PowerShellセットアップスクリプトを実行
 cd $env:USERPROFILE\dotfiles
@@ -160,22 +200,34 @@ setup.bat
 | `Prefix + hjkl` | ペイン移動         |
 | `Prefix + HJKL` | ペインリサイズ     |
 | `Prefix + v`    | コピーモード       |
-| `Prefix + S`    | セッション選択     |
-| `Prefix + y`    | ペイン同期切り替え |
+| `Prefix + c`    | 新規ウィンドウ     |
+| `Prefix + ^`    | 最後のウィンドウ   |
 
-### Neovim
+### Neovim - 基本
+
+| キー       | 動作                 |
+| ---------- | -------------------- |
+| `jj`       | インサートモード終了 |
+| `<Esc><Esc>` | 検索ハイライト解除 |
+| `Y`        | 行末までヤンク       |
+
+### Neovim - LSP
 
 | キー        | 動作                 |
 | ----------- | -------------------- |
-| `jj`        | インサートモード終了 |
 | `<Space>f`  | コードフォーマット   |
 | `<Space>e`  | 診断表示             |
 | `gd`        | 定義へジャンプ       |
+| `gi`        | 実装へジャンプ       |
 | `gr`        | 参照表示             |
+| `K`         | ホバー情報           |
+| `<C-k>`     | シグネチャヘルプ     |
 | `<Space>rn` | リネーム             |
 | `<Space>ca` | コードアクション     |
+| `[d`        | 前の診断             |
+| `]d`        | 次の診断             |
 
-### Copilot (インサートモード)
+### Neovim - Copilot (インサートモード)
 
 | キー     | 動作         |
 | -------- | ------------ |
@@ -185,7 +237,7 @@ setup.bat
 | `Ctrl+N` | 次の提案     |
 | `Ctrl+D` | 提案拒否     |
 
-### Copilot管理
+### Neovim - Copilot管理
 
 | キー          | 動作                  |
 | ------------- | --------------------- |
@@ -193,24 +245,37 @@ setup.bat
 | `<Leader>cpd` | Copilot無効化         |
 | `<Leader>cps` | Copilotステータス確認 |
 
-### CopilotChat
+### Neovim - CopilotChat
 
-| キー         | 動作                     |
-| ------------ | ------------------------ |
-| `<Leader>cc` | チャット開始             |
-| `<Leader>ce` | コード説明（日本語）     |
-| `<Leader>cr` | コードレビュー（日本語） |
-| `<Leader>cf` | バグ修正                 |
-| `<Leader>co` | コード最適化             |
-| `<Leader>cd` | ドキュメント生成         |
-| `<Leader>ct` | テスト生成               |
+| キー          | 動作                      |
+| ------------- | ------------------------- |
+| `<Leader>cc`  | チャット開始              |
+| `<Leader>ccq` | クイックチャット          |
+| `<Leader>ccv` | 選択範囲でチャット (V)    |
+| `<Leader>ccx` | インプレース編集 (V)      |
+| `<Leader>cch` | チャット履歴              |
+| `<Leader>ccr` | チャットリセット          |
+| `<Leader>ce`  | コード説明（日本語）      |
+| `<Leader>cr`  | コードレビュー（日本語）  |
+| `<Leader>cf`  | バグ修正                  |
+| `<Leader>co`  | コード最適化              |
+| `<Leader>cd`  | ドキュメント生成          |
+| `<Leader>ct`  | テスト生成                |
+
+### Neovim - メモ機能 (memolist.vim)
+
+| キー         | 動作         |
+| ------------ | ------------ |
+| `<Leader>mn` | 新規メモ作成 |
+| `<Leader>ml` | メモ一覧表示 |
+| `<Leader>mg` | メモ検索     |
 
 ## 🌐 WSL2特化機能
 
 - **Systemd対応**: より良いサービス管理
-- **WindowsパスFromのワーディング**: Windows PATH汚染防止
-- **ディスプレイ設定**: 自動X11フォワーディング
-- **日本語ロケール**: 完全UTF-8日本語対応
+- **WindowsパスFromのワーディング**: Windows PATH汚染防止 (`appendWindowsPath=false`)
+- **ディスプレイ設定**: 自動X11フォワーディング・WSL2ネイティブGUI対応
+- **日本語ロケール**: 完全UTF-8日本語対応 (`ja_JP.UTF-8`)
 - **Interop修正**: 自動WSL interop修復機能
 
 ## 🤖 Copilot使用方法
@@ -218,13 +283,11 @@ setup.bat
 ### 基本的な使い方
 
 1. **Copilotの有効化**:
-
    ```
    <Leader>cpe または :Copilot enable
    ```
 
 2. **Copilotの無効化**:
-
    ```
    <Leader>cpd または :Copilot disable
    ```
@@ -244,13 +307,16 @@ setup.bat
 
 ### CopilotChatの使用
 
+#### 基本操作
+
 - `<Leader>cc`: チャットウィンドウを開く
-- `<Leader>ccq`: クイックチャット（選択範囲に対して）
+- `<Leader>ccq`: クイックチャット（入力プロンプト）
 - `<Leader>ccv`: 選択範囲でチャット（ビジュアルモード）
+- `<Leader>ccx`: インプレース編集（ビジュアルモード）
 - `<Leader>cch`: チャット履歴を表示
 - `<Leader>ccr`: チャットをリセット
 
-### 専用プロンプト（日本語対応）
+#### 専用プロンプト（日本語対応）
 
 - `<Leader>ce`: コードの説明を日本語で要求
 - `<Leader>cr`: コードレビューを日本語で要求
@@ -258,6 +324,29 @@ setup.bat
 - `<Leader>co`: コード最適化提案
 - `<Leader>cd`: ドキュメント生成
 - `<Leader>ct`: テストコード生成
+
+## 📝 メモ機能
+
+memolist.vimによるテキストメモ管理機能を搭載しています。
+
+### メモの保存場所
+
+- **パス**: `~/Documents/memolist/`
+- **形式**: テキストファイル (`.txt`)
+- **ファイル名**: `YYYYMMDD_HH:MM-メモタイトル.txt`
+
+### 使い方
+
+```vim
+" 新規メモ作成
+<Leader>mn または :MemoNew
+
+" メモ一覧表示（Neo-treeで表示）
+<Leader>ml または :MemoList
+
+" メモを検索
+<Leader>mg または :MemoGrep
+```
 
 ## 🛠️ カスタマイズ
 
@@ -284,7 +373,7 @@ setup.bat
 設定を更新するには：
 
 ```bash
-cd dotfiles
+cd ~/dotfiles
 git pull
 ./setup.sh
 ```
@@ -331,7 +420,6 @@ source ~/.bashrc
 #### WSL設定が適用されない
 
 1. WSL設定を手動で適用：
-
    ```bash
    sudo cp ~/.wsl/wsl.conf /etc/wsl.conf
    ```
@@ -341,11 +429,40 @@ source ~/.bashrc
    wsl --shutdown
    ```
 
+### Neovim関連
+
+#### プラグインが読み込まれない
+
+```vim
+" Lazy.nvimの状態を確認
+:Lazy
+
+" プラグインを手動でインストール
+:Lazy install
+
+" プラグインを更新
+:Lazy update
+```
+
+#### LSPが動作しない
+
+```vim
+" LSPの状態を確認
+:LspInfo
+
+" Masonでサーバーをインストール
+:Mason
+```
+
 ## 📋 要件
 
-- **OS**: WSL2, Ubuntu, またはその他のDebian系Linux
+- **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
 - **ツール**: git, curl, wget
-- **オプション**: pyenv, nvm, rust, go（言語サポート用）
+- **オプション**:
+  - pyenv (Python開発用)
+  - nvm (Node.js開発用)
+  - cargo (Rust開発用)
+  - go (Go言語開発用)
 
 ## 📝 備考
 
@@ -353,6 +470,7 @@ source ~/.bashrc
 - 開発ワークフローに最適化されています
 - ローカル・リモート開発両方に対応
 - VS Code ターミナル統合と互換性があります
+- メモ機能でアイデアやTODOを素早く記録できます
 
 ## 🤝 貢献
 
