@@ -79,7 +79,14 @@ M.editor_plugins = {
             {'<Leader>mg', '<cmd>MemoGrep<cr>', desc = 'Grep Memos'},
         },
         config = function()
-            vim.g.memolist_path = vim.fn.expand('~/memolist')
+            local memolist_path
+            if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
+                memolist_path = vim.fn.expand('~/Documents/memolist')
+            else
+                memolist_path = vim.fn.expand('~/Documents/memolist')
+            end
+
+            vim.g.memolist_path = memolist_path
             vim.g.memolist_memo_suffix = 'txt'
             vim.g.memolist_memo_date = '%Y%m%d_%H:%M'
             vim.g.memolist_filename_prefix_none = 0
