@@ -86,6 +86,7 @@ M.editor_plugins = {
             vim.g.memolist_template_dir_path = vim.fn.expand('~/.config/nvim/templates')
             vim.g.memolist_memo_list_height = 15
             vim.g.memolist_ex_cmd = 'CtrlP'
+            vim.g.memolist_filename_date = '%Y%m%d_'
         end,
     },
 }
