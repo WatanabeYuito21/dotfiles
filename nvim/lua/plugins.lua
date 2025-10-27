@@ -195,6 +195,97 @@ M.ai_plugins = {
             }
         end,
     },
+    -- avante.nvim - AI powered code assistant
+    {
+        "yetone/avante.nvim",
+        event = "VeryLazy",
+        lazy = false,
+        version = false,
+        build = vim.fn.has("win32") ~= 0
+            and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+            or "make",
+        opts = {
+            provider = "copilot",
+            auto_suggestions_provider = "copilot",
+
+            -- 動作設定
+            behaviour = {
+                auto_suggestions = false,
+                auto_set_highlight_group = true,
+                auto_set_keymaps = true,
+                auto_apply_diff_after_generation = false,
+                support_paste_from_clipboard = false,
+                minimize_diff = true,
+            },
+
+            -- ウィンドウ設定
+            windows = {
+                position = "right",
+                wrap = "true",
+                width = 30,
+                sidebar_header = {
+                    enabled = true,
+                    align = "center",
+                    rounded = true,
+                },
+                input = {
+                    prefix = "> ",
+                    height = 8,
+                },
+                edit = {
+                    border = "rounded",
+                    start_insert = true,
+                },
+                ask = {
+                    floating = false,
+                    start_insert = true,
+                    border = "rounded",
+                    focus_on_apply = "ours",
+                },
+            },
+
+            -- ハイライト設定
+            highlights = {
+                diff = {
+                    current = "DiffText",
+                    incoming = "DiffAdd",
+                },
+            },
+        },
+        dependencies = {
+            -- 必須の依存関係
+            "stevearc/dressing.nvim",
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+            -- オプションの依存関係
+            "hrsh7th/nvim-cmp",
+            "nvim-tree/nvim-web-devicons",
+            "zbirenbaum/copilot.lua",
+            {
+                -- image貼り付けサポート
+                "HakonHarnes/img-clip.nvim",
+                event = "VeryLazy",
+                opts = {
+                    default = {
+                        embed_image_as_base64 = false,
+                        prompt_for_file_name = false,
+                        drag_and_drop = {
+                            insert_mode = true,
+                        },
+                        use_absolute_path = true,
+                    },
+                },
+            },
+            {
+                -- markdown用のレンダリング
+                "MeanderingProgrammer/render-markdown.nvim",
+                opts = {
+                    file_types = {"markdown", "Avante"},
+                },
+                ft = {"markdown", "Avante"},
+            },
+        },
+    },
 
     -- Copilot Chat
     {
