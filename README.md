@@ -7,7 +7,7 @@
 - **🐚 Shell**: 共有履歴機能付きBash設定
 - **🖥️ Terminal**: セッション永続化対応Tmux
 - **✏️ Editor**: LSP・自動補完・AI支援付きNeovim
-- **🤖 AI統合**: GitHub Copilot & CopilotChat（日本語プロンプト対応）
+- **🤖 AI統合**: GitHub Copilot、CopilotChat、Avante.nvim（日本語プロンプト対応）
 - **📝 メモ機能**: memolist.vim によるテキストメモ管理
 - **🏠 WSL2最適化**: Windows環境との完全統合
 - **🌍 多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
@@ -29,8 +29,7 @@ dotfiles/
 │   │   ├── lsp-config.lua  # 言語サーバー設定
 │   │   ├── cmp-config.lua  # 自動補完設定
 │   │   └── conform-config.lua # コードフォーマット設定
-│   ├── colors/molokai.vim  # カラースキーム
-│   └── pack/github/start/  # Copilot.vim
+│   └── colors/molokai.vim  # カラースキーム
 ├── wsl/
 │   └── wsl.conf            # WSL設定
 ├── scripts/
@@ -89,7 +88,7 @@ dotfiles/
 
 #### LSP・補完
 
-- **nvim-lspconfig**: 多言語LSP対応
+- **nvim-lspconfig**: 多言語LSP対応（最新のvim.lsp.config APIを使用）
 - **mason.nvim**: LSPサーバー自動管理
 - **nvim-cmp**: 強力な自動補完エンジン
   - LSP補完
@@ -105,11 +104,21 @@ dotfiles/
 
 #### AI支援
 
-- **GitHub Copilot**: リアルタイムコード補完
-- **CopilotChat.nvim**: 対話型AI支援（日本語対応）
+- **copilot.lua**: 次世代GitHub Copilot統合
+  - リアルタイムコード補完
+  - インサートモードでの高速提案
+  - カスタマイズ可能なキーマップ
+- **CopilotChat.nvim**: 対話型AI支援（日本語完全対応）
   - コード説明・レビュー
   - バグ修正・最適化提案
   - ドキュメント・テスト生成
+  - カスタム日本語プロンプト
+  - 選択範囲への直接適用
+- **Avante.nvim**: 高度なAIコーディングアシスタント
+  - Cursor風のUI/UX
+  - インラインコード編集
+  - 複数ファイル対応
+  - AI駆動型リファクタリング
 
 ### 対応言語・ツール
 
@@ -205,37 +214,36 @@ setup.bat
 
 ### Neovim - 基本
 
-| キー       | 動作                 |
-| ---------- | -------------------- |
-| `jj`       | インサートモード終了 |
-| `<Esc><Esc>` | 検索ハイライト解除 |
-| `Y`        | 行末までヤンク       |
+| キー         | 動作                 |
+| ------------ | -------------------- |
+| `jj`         | インサートモード終了 |
+| `<Esc><Esc>` | 検索ハイライト解除   |
+| `Y`          | 行末までヤンク       |
 
 ### Neovim - LSP
 
-| キー        | 動作                 |
-| ----------- | -------------------- |
-| `<Space>f`  | コードフォーマット   |
-| `<Space>e`  | 診断表示             |
-| `gd`        | 定義へジャンプ       |
-| `gi`        | 実装へジャンプ       |
-| `gr`        | 参照表示             |
-| `K`         | ホバー情報           |
-| `<C-k>`     | シグネチャヘルプ     |
-| `<Space>rn` | リネーム             |
-| `<Space>ca` | コードアクション     |
-| `[d`        | 前の診断             |
-| `]d`        | 次の診断             |
+| キー        | 動作               |
+| ----------- | ------------------ |
+| `<Space>f`  | コードフォーマット |
+| `<Space>e`  | 診断表示           |
+| `gd`        | 定義へジャンプ     |
+| `gi`        | 実装へジャンプ     |
+| `gr`        | 参照表示           |
+| `K`         | ホバー情報         |
+| `<C-k>`     | シグネチャヘルプ   |
+| `<Space>rn` | リネーム           |
+| `<Space>ca` | コードアクション   |
+| `[d`        | 前の診断           |
+| `]d`        | 次の診断           |
 
 ### Neovim - Copilot (インサートモード)
 
-| キー     | 動作         |
-| -------- | ------------ |
-| `Ctrl+J` | 提案受け入れ |
-| `Ctrl+L` | 単語受け入れ |
-| `Ctrl+K` | 前の提案     |
-| `Ctrl+N` | 次の提案     |
-| `Ctrl+D` | 提案拒否     |
+| キー    | 動作         |
+| ------- | ------------ |
+| `Alt+l` | 提案受け入れ |
+| `Alt+]` | 次の提案     |
+| `Alt+[` | 前の提案     |
+| `C-]`   | 提案拒否     |
 
 ### Neovim - Copilot管理
 
@@ -247,20 +255,30 @@ setup.bat
 
 ### Neovim - CopilotChat
 
-| キー          | 動作                      |
-| ------------- | ------------------------- |
-| `<Leader>cc`  | チャット開始              |
-| `<Leader>ccq` | クイックチャット          |
-| `<Leader>ccv` | 選択範囲でチャット (V)    |
-| `<Leader>ccx` | インプレース編集 (V)      |
-| `<Leader>cch` | チャット履歴              |
-| `<Leader>ccr` | チャットリセット          |
-| `<Leader>ce`  | コード説明（日本語）      |
-| `<Leader>cr`  | コードレビュー（日本語）  |
-| `<Leader>cf`  | バグ修正                  |
-| `<Leader>co`  | コード最適化              |
-| `<Leader>cd`  | ドキュメント生成          |
-| `<Leader>ct`  | テスト生成                |
+| キー          | 動作                     |
+| ------------- | ------------------------ |
+| `<Leader>cc`  | チャット開始             |
+| `<Leader>ccq` | クイックチャット         |
+| `<Leader>ccv` | 選択範囲でチャット (V)   |
+| `<Leader>ccx` | インプレース編集 (V)     |
+| `<Leader>cch` | チャット履歴             |
+| `<Leader>ccr` | チャットリセット         |
+| `<Leader>ce`  | コード説明（日本語）     |
+| `<Leader>cr`  | コードレビュー（日本語） |
+| `<Leader>cf`  | バグ修正                 |
+| `<Leader>co`  | コード最適化             |
+| `<Leader>cd`  | ドキュメント生成         |
+| `<Leader>ct`  | テスト生成               |
+
+### Neovim - Avante.nvim
+
+| キー         | 動作           |
+| ------------ | -------------- |
+| `<Leader>aa` | Avante Ask     |
+| `<Leader>ar` | Avante Refresh |
+| `<Leader>ae` | Avante Edit    |
+| `<Leader>at` | Avante Toggle  |
+| `<Leader>af` | Avante Focus   |
 
 ### Neovim - メモ機能 (memolist.vim)
 
@@ -278,16 +296,20 @@ setup.bat
 - **日本語ロケール**: 完全UTF-8日本語対応 (`ja_JP.UTF-8`)
 - **Interop修正**: 自動WSL interop修復機能
 
-## 🤖 Copilot使用方法
+## 🤖 AI機能の使い方
 
-### 基本的な使い方
+### Copilot（copilot.lua）
+
+#### 基本的な使い方
 
 1. **Copilotの有効化**:
+
    ```
    <Leader>cpe または :Copilot enable
    ```
 
 2. **Copilotの無効化**:
+
    ```
    <Leader>cpd または :Copilot disable
    ```
@@ -297,15 +319,14 @@ setup.bat
    <Leader>cps または :Copilot status
    ```
 
-### インサートモードでの補完
+#### インサートモードでの補完
 
-- `Ctrl+J`: 提案を受け入れる
-- `Ctrl+L`: 単語のみ受け入れる
-- `Ctrl+K`: 前の提案
-- `Ctrl+N`: 次の提案
-- `Ctrl+D`: 提案を拒否
+- `Alt+l`: 提案を受け入れる
+- `Alt+]`: 次の提案
+- `Alt+[`: 前の提案
+- `Ctrl+]`: 提案を拒否
 
-### CopilotChatの使用
+### CopilotChat
 
 #### 基本操作
 
@@ -324,6 +345,18 @@ setup.bat
 - `<Leader>co`: コード最適化提案
 - `<Leader>cd`: ドキュメント生成
 - `<Leader>ct`: テストコード生成
+
+### Avante.nvim
+
+高度なAIコーディングアシスタント機能を提供します：
+
+- `<Leader>aa`: AIに質問（ノーマルモード・ビジュアルモード）
+- `<Leader>ar`: Avanteを更新
+- `<Leader>ae`: Avanteエディット
+- `<Leader>at`: Avanteトグル
+- `<Leader>af`: Avanteにフォーカス
+
+Cursor IDEのようなインライン編集と、複数ファイルにまたがるリファクタリングが可能です。
 
 ## 📝 メモ機能
 
@@ -353,7 +386,24 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 ### 新しい言語の追加
 
 1. `nvim/lua/lsp-config.lua`にLSPサーバーを追加
+
+   ```lua
+   -- 例：Zig言語を追加
+   if vim.fn.executable('zls') == 1 then
+       vim.lsp.config.zls = {
+           capabilities = capabilities,
+       }
+   end
+   ```
+
 2. `nvim/lua/conform-config.lua`にフォーマッターを追加
+
+   ```lua
+   formatters_by_ft = {
+       zig = { "zigfmt" },
+   }
+   ```
+
 3. Masonまたはシステムパッケージマネージャーでツールをインストール
 
 ### Tmuxのカスタマイズ
@@ -420,6 +470,7 @@ source ~/.bashrc
 #### WSL設定が適用されない
 
 1. WSL設定を手動で適用：
+
    ```bash
    sudo cp ~/.wsl/wsl.conf /etc/wsl.conf
    ```
@@ -454,10 +505,37 @@ source ~/.bashrc
 :Mason
 ```
 
+#### Copilot認証エラー
+
+```vim
+" Copilotの設定状態を確認
+:Copilot status
+
+" 認証を再実行
+:Copilot setup
+```
+
+#### Avante.nvimがエラーを出す
+
+Avante.nvimは多くの依存関係があります：
+
+```bash
+# 必要な依存関係を確認
+# - copilot.lua
+# - plenary.nvim
+# - nui.nvim
+# - nvim-treesitter
+
+# Neovim内で再インストール
+:Lazy install
+```
+
 ## 📋 要件
 
 - **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
+- **Neovim**: 0.10.0以上（最新版推奨）
 - **ツール**: git, curl, wget
+- **Node.js**: 18.0.0以上（Copilot.lua, Avante.nvim用）
 - **オプション**:
   - pyenv (Python開発用)
   - nvm (Node.js開発用)
@@ -471,6 +549,7 @@ source ~/.bashrc
 - ローカル・リモート開発両方に対応
 - VS Code ターミナル統合と互換性があります
 - メモ機能でアイデアやTODOを素早く記録できます
+- AI機能（Copilot, CopilotChat, Avante）で開発効率が大幅に向上します
 
 ## 🤝 貢献
 

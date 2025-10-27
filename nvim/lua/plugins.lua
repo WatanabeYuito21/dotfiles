@@ -201,9 +201,10 @@ M.ai_plugins = {
         event = "VeryLazy",
         lazy = false,
         version = false,
-        build = vim.fn.has("win32") ~= 0
-            and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-            or "make",
+        -- build = vim.fn.has("win32") ~= 0
+        --     and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+        --     or "make",
+        build = "make",
         opts = {
             provider = "copilot",
             auto_suggestions_provider = "copilot",
@@ -221,7 +222,7 @@ M.ai_plugins = {
             -- ウィンドウ設定
             windows = {
                 position = "right",
-                wrap = "true",
+                wrap = true,
                 width = 30,
                 sidebar_header = {
                     enabled = true,
@@ -399,6 +400,58 @@ M.ai_plugins = {
                 desc = 'インプレース編集',
             },
         },
+    },
+
+    -- copilot.lua(avante.nvimが依存)
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    enabled = true,
+                    auto_trigger = true,
+                    debounce = 75,
+                    keymap = {
+                        accept = "<M-l>",
+                        accept_word = false,
+                        accept_line = false,
+                        next = "<M-]>",
+                        prev = "<M-[>",
+                        dismiss = "<C-]>",
+                    },
+                },
+                panel = {
+                    enabled = true,
+                    auto_refresh = false,
+                    keymap = {
+                        jump_prev = "[[",
+                        jump_next = "]]",
+                        accept = "<CR>",
+                        refresh = "gr",
+                        open = "<M-CR>"
+                    },
+                    layout = {
+                        position = "bottom",
+                        ratio = 0.4
+                    },
+                },
+                filetypes = {
+                    yaml = false,
+                    markdown = false,
+                    help = false,
+                    gitcommit = false,
+                    gitrebase = false,
+                    hgcommit = false,
+                    svn = false,
+                    cvs = false,
+                    ["."] = false,
+                },
+                copilot_node_command = 'node',
+                server_opts_overrides = {},
+            })
+        end,
     },
 
     -- より高機能なAIアシスタント
