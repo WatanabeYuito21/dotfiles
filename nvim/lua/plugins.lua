@@ -162,96 +162,13 @@ M.formatter_plugins = {
 --- Copilot関連
 M.ai_plugins = {
     {
-        'github/copilot.vim',
-        event = 'InsertEnter',
-        config = function()
-            -- Copilotの基本設定
-            vim.g.copilot_no_tab_map = true
-            vim.g.copilot_assume_mapped = true
-
-            -- キーマップ設定
-            vim.api.nvim_set_keymap('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
-                expr = true,
-                silent = true,
-                script = true,
-                replace_keycodes = false
-            })
-
-            -- その他便利なキーマップ
-            vim.api.nvim_set_keymap('i', '<C-L>', '<Plug>(copilot-accept-word)', { silent = true })
-            vim.api.nvim_set_keymap('i', '<C-K>', '<Plug>(copilot-previous)', { silent = true })
-            vim.api.nvim_set_keymap('i', '<C-N>', '<Plug>(copilot-next)', { silent = true })
-            vim.api.nvim_set_keymap('i', '<C-D>', '<Plug>(copilot-dismiss)', { silent = true })
-
-            -- Copilotを無効にするファイルタイプ
-            vim.g.copilot_filetypes = {
-                ['*'] = true,
-                gitcommit = false,
-                gitrebase = false,
-                hgcommit = false,
-                svn = false,
-                cvs = false,
-                ['.'] = false,
-            }
-        end,
-    },
-    -- avante.nvim - AI powered code assistant
-    {
         "yetone/avante.nvim",
         event = "VeryLazy",
         lazy = false,
         version = false,
-        -- build = vim.fn.has("win32") ~= 0
-        --     and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-        --     or "make",
         build = "make",
         opts = {
             provider = "copilot",
-            auto_suggestions_provider = "copilot",
-
-            -- 動作設定
-            behaviour = {
-                auto_suggestions = false,
-                auto_set_highlight_group = true,
-                auto_set_keymaps = true,
-                auto_apply_diff_after_generation = false,
-                support_paste_from_clipboard = false,
-                minimize_diff = true,
-            },
-
-            -- ウィンドウ設定
-            windows = {
-                position = "right",
-                wrap = true,
-                width = 30,
-                sidebar_header = {
-                    enabled = true,
-                    align = "center",
-                    rounded = true,
-                },
-                input = {
-                    prefix = "> ",
-                    height = 8,
-                },
-                edit = {
-                    border = "rounded",
-                    start_insert = true,
-                },
-                ask = {
-                    floating = false,
-                    start_insert = true,
-                    border = "rounded",
-                    focus_on_apply = "ours",
-                },
-            },
-
-            -- ハイライト設定
-            highlights = {
-                diff = {
-                    current = "DiffText",
-                    incoming = "DiffAdd",
-                },
-            },
         },
         dependencies = {
             -- 必須の依存関係
@@ -405,53 +322,62 @@ M.ai_plugins = {
     -- copilot.lua(avante.nvimが依存)
     {
         "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
+        -- cmd = "Copilot",
         event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    enabled = true,
-                    auto_trigger = true,
-                    debounce = 75,
-                    keymap = {
-                        accept = "<M-l>",
-                        accept_word = false,
-                        accept_line = false,
-                        next = "<M-]>",
-                        prev = "<M-[>",
-                        dismiss = "<C-]>",
-                    },
-                },
-                panel = {
-                    enabled = true,
-                    auto_refresh = false,
-                    keymap = {
-                        jump_prev = "[[",
-                        jump_next = "]]",
-                        accept = "<CR>",
-                        refresh = "gr",
-                        open = "<M-CR>"
-                    },
-                    layout = {
-                        position = "bottom",
-                        ratio = 0.4
-                    },
-                },
-                filetypes = {
-                    yaml = false,
-                    markdown = false,
-                    help = false,
-                    gitcommit = false,
-                    gitrebase = false,
-                    hgcommit = false,
-                    svn = false,
-                    cvs = false,
-                    ["."] = false,
-                },
-                copilot_node_command = 'node',
-                server_opts_overrides = {},
-            })
-        end,
+        opts = {
+            panel = {
+                enabled = false,
+            },
+            suggestion = {
+                auto_trigger = true,
+                hide_during_completion = false,
+            },
+        },
+        -- config = function()
+        --     require("copilot").setup({
+        --         suggestion = {
+        --             enabled = true,
+        --             auto_trigger = true,
+        --             debounce = 75,
+        --             keymap = {
+        --                 accept = "<M-l>",
+        --                 accept_word = false,
+        --                 accept_line = false,
+        --                 next = "<M-]>",
+        --                 prev = "<M-[>",
+        --                 dismiss = "<C-]>",
+        --             },
+        --         },
+        --         panel = {
+        --             enabled = true,
+        --             auto_refresh = false,
+        --             keymap = {
+        --                 jump_prev = "[[",
+        --                 jump_next = "]]",
+        --                 accept = "<CR>",
+        --                 refresh = "gr",
+        --                 open = "<M-CR>"
+        --             },
+        --             layout = {
+        --                 position = "bottom",
+        --                 ratio = 0.4
+        --             },
+        --         },
+        --         filetypes = {
+        --             yaml = false,
+        --             markdown = false,
+        --             help = false,
+        --             gitcommit = false,
+        --             gitrebase = false,
+        --             hgcommit = false,
+        --             svn = false,
+        --             cvs = false,
+        --             ["."] = false,
+        --         },
+        --         copilot_node_command = 'node',
+        --         server_opts_overrides = {},
+        --     })
+        -- end,
     },
 
     -- より高機能なAIアシスタント
