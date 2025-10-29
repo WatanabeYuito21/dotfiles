@@ -5,5 +5,5 @@ require('options')
 require('keymaps')
 
 -- プラグインの設定
-require('plugins')
+require('plugins.init')
 
