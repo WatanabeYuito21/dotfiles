@@ -343,19 +343,6 @@ M.ai_plugins = {
         },
         config = function()
             require("copilot").setup({
-                suggestion = {
-                    enabled = true,
-                    auto_trigger = true,
-                    debounce = 75,
-                    keymap = {
-                        accept = "<C-j>",
-                        accept_word = "<C-l>",
-                        accept_line = false,
-                        next = "<C-n>",
-                        prev = "<C-k>",
-                        dismiss = "<C-d>",
-                    },
-                },
                 panel = {
                     enabled = true,
                     auto_refresh = false,
@@ -369,6 +356,19 @@ M.ai_plugins = {
                     layout = {
                         position = "bottom",
                         ratio = 0.4
+                    },
+                },
+                suggestion = {
+                    enabled = true,
+                    auto_trigger = true,
+                    debounce = 75,
+                    keymap = {
+                        accept = "<C-J>",
+                        accept_word = "<C-L>",
+                        accept_line = false,
+                        next = "<C-N>",
+                        prev = "<C-K>",
+                        dismiss = "<C-D>",
                     },
                 },
                 filetypes = {
