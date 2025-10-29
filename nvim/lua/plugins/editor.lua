@@ -25,15 +25,14 @@ return {
             'MemoGrep',
         },
         keys = {
-            { '<leader>mn', '<cmd>MemoNew<CR>', desc = 'New Memo' },
-            { '<leader>ml', '<cmd>MemoList<CR>', desc = 'List Memos' },
-            { '<leader>mg', '<cmd>MemoGrep<CR>', desc = 'Grep Memos' },
+            {'<Leader>mn', '<cmd>MemoNew<cr>', desc = 'New Memo'},
+            {'<Leader>ml', '<cmd>MemoList<cr>', desc = 'List Memos'},
+            {'<Leader>mg', '<cmd>MemoGrep<cr>', desc = 'Grep Memos'},
         },
         init = function()
             local memolist_path
 
-            local is_wsl = vim.fn.filereadable('/proc/version') == 1 and
-                           vim.fn.readfile('/proc/version')[1]:match('microsoft') ~= nil
+            local is_wsl = vim.fn.filereadable('/proc/version') == 1 and vim.fn.readfile('/proc/version')[1]:match('microsoft') ~=nil
 
             if is_wsl or vim.fn.has('unix') == 1 then
                 memolist_path = vim.fn.expand('~/Documents/memolist')
@@ -55,6 +54,6 @@ return {
             vim.g.memolist_memo_list_height = 15
             vim.g.memolist_ex_cmd = 'Neotree'
             vim.g.memolist_filename_date = '%Y%m%d_'
-        end
+        end,
     },
 }
