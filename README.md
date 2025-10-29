@@ -25,11 +25,24 @@ dotfiles/
 │   ├── lua/
 │   │   ├── options.lua     # エディタオプション
 │   │   ├── keymaps.lua     # キーマッピング
-│   │   ├── plugins.lua     # lazy.nvimプラグイン管理
-│   │   ├── lsp-config.lua  # 言語サーバー設定
-│   │   ├── cmp-config.lua  # 自動補完設定
-│   │   └── conform-config.lua # コードフォーマット設定
-│   └── colors/molokai.vim  # カラースキーム
+│   │   ├── plugins/        # プラグイン設定（モジュール分割）
+│   │   │   ├── init.lua    # lazy.nvimプラグイン管理
+│   │   │   ├── ui.lua      # UI関連プラグイン
+│   │   │   ├── editor.lua  # エディタ機能プラグイン
+│   │   │   ├── file_management.lua # ファイル管理プラグイン
+│   │   │   ├── markdown.lua # Markdown関連プラグイン
+│   │   │   ├── formatter.lua # コードフォーマット設定
+│   │   │   ├── lsp.lua     # LSPプラグイン設定
+│   │   │   └── ai.lua      # AI関連プラグイン
+│   │   ├── lsp/            # LSP設定（モジュール分割）
+│   │   │   ├── init.lua    # LSPエントリーポイント
+│   │   │   ├── servers.lua # サーバー設定
+│   │   │   ├── handlers.lua # ハンドラー設定
+│   │   │   └── capabilities.lua # 機能設定
+│   │   └── utils/          # ユーティリティ
+│   ├── colors/molokai.vim  # カラースキーム
+│   └── templates/          # テンプレートファイル
+│       └── memolist.txt    # メモテンプレート
 ├── wsl/
 │   └── wsl.conf            # WSL設定
 ├── scripts/
@@ -75,12 +88,15 @@ dotfiles/
 - **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
 - **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
 - **molokai**: カラースキーム
+- **dressing.nvim**: UI選択・入力の改善
+- **render-markdown.nvim**: Markdownコンテンツのリアルタイムレンダリング
 
 #### エディタ機能
 
 - **Comment.nvim**: 高速コメント切り替え
 - **treesj**: 構造的な分割・結合機能
 - **markdown-preview.nvim**: Markdownプレビュー機能
+- **img-clip.nvim**: 画像のクリップボード貼り付けサポート
 - **memolist.vim**: テキストメモ管理システム
   - `~/Documents/memolist`にメモを保存
   - Neo-treeと統合したリスト表示
@@ -119,6 +135,7 @@ dotfiles/
   - インラインコード編集
   - 複数ファイル対応
   - AI駆動型リファクタリング
+  - 依存プラグイン: dressing.nvim, plenary.nvim, nui.nvim, img-clip.nvim, render-markdown.nvim
 
 ### 対応言語・ツール
 
@@ -238,12 +255,13 @@ setup.bat
 
 ### Neovim - Copilot (インサートモード)
 
-| キー    | 動作         |
-| ------- | ------------ |
-| `Alt+l` | 提案受け入れ |
-| `Alt+]` | 次の提案     |
-| `Alt+[` | 前の提案     |
-| `C-]`   | 提案拒否     |
+| キー    | 動作                  |
+| ------- | --------------------- |
+| `C-J`   | 提案受け入れ          |
+| `C-L`   | 単語単位で受け入れ    |
+| `C-N`   | 次の提案              |
+| `C-K`   | 前の提案              |
+| `C-D`   | 提案拒否              |
 
 ### Neovim - Copilot管理
 
@@ -260,7 +278,7 @@ setup.bat
 | `<Leader>cc`  | チャット開始             |
 | `<Leader>ccq` | クイックチャット         |
 | `<Leader>ccv` | 選択範囲でチャット (V)   |
-| `<Leader>ccx` | インプレース編集 (V)     |
+| `<Leader>ccx` | 選択範囲の修正 (V)       |
 | `<Leader>cch` | チャット履歴             |
 | `<Leader>ccr` | チャットリセット         |
 | `<Leader>ce`  | コード説明（日本語）     |
@@ -321,10 +339,11 @@ setup.bat
 
 #### インサートモードでの補完
 
-- `Alt+l`: 提案を受け入れる
-- `Alt+]`: 次の提案
-- `Alt+[`: 前の提案
-- `Ctrl+]`: 提案を拒否
+- `C-J`: 提案を受け入れる
+- `C-L`: 単語単位で受け入れる
+- `C-N`: 次の提案
+- `C-K`: 前の提案
+- `C-D`: 提案を拒否
 
 ### CopilotChat
 
@@ -333,7 +352,7 @@ setup.bat
 - `<Leader>cc`: チャットウィンドウを開く
 - `<Leader>ccq`: クイックチャット（入力プロンプト）
 - `<Leader>ccv`: 選択範囲でチャット（ビジュアルモード）
-- `<Leader>ccx`: インプレース編集（ビジュアルモード）
+- `<Leader>ccx`: 選択範囲の修正（プロンプト入力、ビジュアルモード）
 - `<Leader>cch`: チャット履歴を表示
 - `<Leader>ccr`: チャットをリセット
 
@@ -385,7 +404,7 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 
 ### 新しい言語の追加
 
-1. `nvim/lua/lsp-config.lua`にLSPサーバーを追加
+1. `nvim/lua/lsp/servers.lua`にLSPサーバーを追加
 
    ```lua
    -- 例：Zig言語を追加
@@ -396,7 +415,7 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
    end
    ```
 
-2. `nvim/lua/conform-config.lua`にフォーマッターを追加
+2. `nvim/lua/plugins/formatter.lua`にフォーマッターを追加
 
    ```lua
    formatters_by_ft = {
@@ -522,9 +541,13 @@ Avante.nvimは多くの依存関係があります：
 ```bash
 # 必要な依存関係を確認
 # - copilot.lua
+# - dressing.nvim
 # - plenary.nvim
 # - nui.nvim
-# - nvim-treesitter
+# - img-clip.nvim
+# - render-markdown.nvim
+# - nvim-cmp
+# - nvim-web-devicons
 
 # Neovim内で再インストール
 :Lazy install
