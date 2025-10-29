@@ -169,6 +169,14 @@ M.ai_plugins = {
         build = "make",
         opts = {
             provider = "copilot",
+            behavior = {
+                auto_suggestions = false,
+                auto_set_highlight_group = true,
+                auto_set_keymaps = true,
+                auto_apply_diff_after_generation = false,
+                support_paste_from_clipboard = true,
+                minimize_diff = true,
+            },
         },
         dependencies = {
             -- 必須の依存関係
@@ -333,51 +341,51 @@ M.ai_plugins = {
                 hide_during_completion = false,
             },
         },
-        -- config = function()
-        --     require("copilot").setup({
-        --         suggestion = {
-        --             enabled = true,
-        --             auto_trigger = true,
-        --             debounce = 75,
-        --             keymap = {
-        --                 accept = "<M-l>",
-        --                 accept_word = false,
-        --                 accept_line = false,
-        --                 next = "<M-]>",
-        --                 prev = "<M-[>",
-        --                 dismiss = "<C-]>",
-        --             },
-        --         },
-        --         panel = {
-        --             enabled = true,
-        --             auto_refresh = false,
-        --             keymap = {
-        --                 jump_prev = "[[",
-        --                 jump_next = "]]",
-        --                 accept = "<CR>",
-        --                 refresh = "gr",
-        --                 open = "<M-CR>"
-        --             },
-        --             layout = {
-        --                 position = "bottom",
-        --                 ratio = 0.4
-        --             },
-        --         },
-        --         filetypes = {
-        --             yaml = false,
-        --             markdown = false,
-        --             help = false,
-        --             gitcommit = false,
-        --             gitrebase = false,
-        --             hgcommit = false,
-        --             svn = false,
-        --             cvs = false,
-        --             ["."] = false,
-        --         },
-        --         copilot_node_command = 'node',
-        --         server_opts_overrides = {},
-        --     })
-        -- end,
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    enabled = true,
+                    auto_trigger = true,
+                    debounce = 75,
+                    keymap = {
+                        accept = "<C-j>",
+                        accept_word = "<C-l>",
+                        accept_line = false,
+                        next = "<C-n>",
+                        prev = "<C-k>",
+                        dismiss = "<C-d>",
+                    },
+                },
+                panel = {
+                    enabled = true,
+                    auto_refresh = false,
+                    keymap = {
+                        jump_prev = "[[",
+                        jump_next = "]]",
+                        accept = "<CR>",
+                        refresh = "gr",
+                        open = "<M-CR>"
+                    },
+                    layout = {
+                        position = "bottom",
+                        ratio = 0.4
+                    },
+                },
+                filetypes = {
+                    yaml = false,
+                    markdown = false,
+                    help = false,
+                    gitcommit = false,
+                    gitrebase = false,
+                    hgcommit = false,
+                    svn = false,
+                    cvs = false,
+                    ["."] = false,
+                },
+                copilot_node_command = 'node',
+                server_opts_overrides = {},
+            })
+        end,
     },
 
     -- より高機能なAIアシスタント
