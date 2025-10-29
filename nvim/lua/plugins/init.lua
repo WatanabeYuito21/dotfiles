@@ -35,6 +35,6 @@ end
 -- Setup lazy.nvim with all plugins
 require('lazy').setup(get_all_plugins(), {
     rocks = {
-        enabled = false,
+        enabled = true,
     },
 })

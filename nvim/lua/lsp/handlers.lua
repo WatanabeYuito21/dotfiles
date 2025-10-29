@@ -8,7 +8,7 @@ local conform_ok, conform = pcall(require, 'conform')
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
-        local opts = { uffer = ev.buf, silent = true}
+        local opts = { buffer = ev.buf, silent = true }
 
         -- 基本的なLSP機能
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
