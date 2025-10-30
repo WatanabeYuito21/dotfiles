@@ -10,6 +10,16 @@ return {
         build = "make",
         opts = {
             provider = "copilot",
+            providers = {
+                copilot = {
+                    endpoint = "https://api.githubcopilot.com",
+                    model = "gpt-5-codex",
+                    proxy = nil,
+                    allow_insecure = false,
+                    timeout = 30000,
+                    temperature = 0,
+                },
+            },
             behavior = {
                 auto_suggestions = false,
                 auto_set_highlight_group = true,
@@ -59,8 +69,12 @@ return {
         'CopilotC-Nvim/CopilotChat.nvim',
         branch = 'main',
         dependencies = {
-            'github/copilot.vim',
+            "zbirenbaum/copilot.lua",
             'nvim-lua/plenary.nvim',
+        },
+        ops = {
+            model = "claude-4.5-sonnet",
+            debug = true,
         },
         config = function()
             require('CopilotChat').setup({
