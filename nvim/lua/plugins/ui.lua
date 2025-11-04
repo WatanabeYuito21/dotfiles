@@ -8,12 +8,12 @@ return {
         dependencies = { 'nvim-tree/nvim-web-devicons' },
         opts = {
             options = {
-                theme = 'molokai',
+                theme = 'auto',
             },
         },
     },
     {
-        -- カラースキーム
+        -- インデントガイド表示
         'shellRaining/hlchunk.nvim',
         event = {
             'BufReadPre',

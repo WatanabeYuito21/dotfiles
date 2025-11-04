@@ -85,7 +85,7 @@ opt.backup = false
 cmd('syntax on')
 
 -- カラースキーム設定
-cmd('colorscheme molokai')
+cmd('colorscheme spring-night')
 
 -- 256色表示
 cmd('set t_Co=256')
