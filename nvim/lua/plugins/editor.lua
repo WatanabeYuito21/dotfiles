@@ -10,10 +10,13 @@ return {
     {
         -- コードの折りたたみを強化するプラグイン
         'Wansmer/treesj',
-        keys = {
-            '<space>m',
-            '<space>j',
-            '<space>s',
+       keys = {
+           { '<space>m', function() require('treesj').toggle() end, desc = 'Toggle Split/Join' },
+           { '<space>j', function() require('treesj').join() end, desc = 'Join code block' },
+           {'<space>s', function() require('treesj').split() end, desc = 'Split code block'},
+        },
+        opts = {
+            use_default_keymaps = false,
         },
     },
     {
