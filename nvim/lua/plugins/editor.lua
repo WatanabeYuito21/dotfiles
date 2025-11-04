@@ -50,12 +50,13 @@ return {
             end
 
             vim.g.memolist_path = memolist_path
-            vim.g.memolist_memo_suffix = 'txt'
+            vim.g.memolist_memo_suffix = 'md'
             vim.g.memolist_memo_date = '%Y%m%d_%H:%M'
             vim.g.memolist_filename_prefix_none = 0
             vim.g.memolist_template_dir_path = vim.fn.expand('~/.config/nvim/templates')
             vim.g.memolist_memo_list_height = 15
-            vim.g.memolist_ex_cmd = 'Neotree'
+            -- vim.g.memolist_ex_cmd = 'Neotree'
+            vim.g.memolist_ex_cmd = 'edit'
             vim.g.memolist_filename_date = '%Y%m%d_'
         end,
     },
