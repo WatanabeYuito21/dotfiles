@@ -13,7 +13,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Global settings
-vim.g.mkdp_auto_start = 1  -- Markdown Preview Auto Start
+vim.g.mkdp_auto_start = 0  -- Markdown Preview Auto Start
 vim.g.mkdp_auto_close = 1  -- Markdown Preview Auto Close
 
 -- Integrate plugins
