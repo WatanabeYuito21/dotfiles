@@ -65,6 +65,7 @@ opt.backspace = { 'indent', 'eol', 'start' }
 
 -- 背景色設定
 opt.background = 'dark'
+-- opt.background = 'light'
 
 -- クリップボード設定
 opt.clipboard = "unnamedplus"
@@ -85,7 +86,8 @@ opt.backup = false
 cmd('syntax on')
 
 -- カラースキーム設定
-cmd('colorscheme spring-night')
+-- cmd('colorscheme spring-night')
+cmd('colorscheme gruvbox')
 
 -- 256色表示
 cmd('set t_Co=256')
