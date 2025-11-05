@@ -1,6 +1,6 @@
 -- dotfiles/nvim/lua/lsp/handlers.lua
 -- LSPアタッチ時のキーマップとイベント設定
---
+
 -- conform.nvimのチェック
 local conform_ok, conform = pcall(require, 'conform')
 
