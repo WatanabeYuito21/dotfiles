@@ -17,7 +17,9 @@ return {
                     proxy = nil,
                     allow_insecure = false,
                     timeout = 30000,
-                    temperature = 0,
+                    extra_request_body = {
+                        temperature = 0,
+                    }
                 },
             },
             behavior = {
