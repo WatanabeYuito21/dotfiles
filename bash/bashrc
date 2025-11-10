@@ -224,3 +224,8 @@ eval "$(uvx --generate-shell-completion bash)"
 export PATH="$PATH:/home/watanabeyuito/.local/bin"
 export PATH="$PATH:/home/watanabeyuito/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
+export GTK_IM_MODULE=ibus
+export QT_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+alias obsidian="ibus-daemon -drx && /opt/Obsidian/obsidian --disable-gpu --no-sandbox"
+source ~/.bashrc_im
