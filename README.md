@@ -7,7 +7,7 @@
 - **🐚 Shell**: 共有履歴機能付きBash設定
 - **🖥️ Terminal**: セッション永続化対応Tmux
 - **✏️ Editor**: LSP・自動補完・AI支援付きNeovim
-- **🤖 AI統合**: GitHub Copilot、CopilotChat、Avante.nvim（日本語プロンプト対応）
+- **🤖 AI統合**: Claude Code (claudecode.nvim) によるNeovim内AI支援
 - **📝 メモ機能**: memolist.vim によるテキストメモ管理
 - **🏠 WSL2最適化**: Windows環境との完全統合
 - **🌍 多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
@@ -84,19 +84,16 @@ dotfiles/
 
 #### UI・表示
 
-- **lualine.nvim**: モダンなステータスライン (Molokaiテーマ)
+- **lualine.nvim**: モダンなステータスライン (autoテーマ)
 - **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
 - **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
 - **molokai**: カラースキーム
-- **dressing.nvim**: UI選択・入力の改善
-- **render-markdown.nvim**: Markdownコンテンツのリアルタイムレンダリング
 
 #### エディタ機能
 
 - **Comment.nvim**: 高速コメント切り替え
 - **treesj**: 構造的な分割・結合機能
 - **markdown-preview.nvim**: Markdownプレビュー機能
-- **img-clip.nvim**: 画像のクリップボード貼り付けサポート
 - **memolist.vim**: テキストメモ管理システム
   - `~/Documents/memolist`にメモを保存
   - Neo-treeと統合したリスト表示
@@ -120,22 +117,13 @@ dotfiles/
 
 #### AI支援
 
-- **copilot.lua**: 次世代GitHub Copilot統合
-  - リアルタイムコード補完
-  - インサートモードでの高速提案
-  - カスタマイズ可能なキーマップ
-- **CopilotChat.nvim**: 対話型AI支援（日本語完全対応）
-  - コード説明・レビュー
-  - バグ修正・最適化提案
-  - ドキュメント・テスト生成
-  - カスタム日本語プロンプト
-  - 選択範囲への直接適用
-- **Avante.nvim**: 高度なAIコーディングアシスタント
-  - Cursor風のUI/UX
-  - インラインコード編集
-  - 複数ファイル対応
-  - AI駆動型リファクタリング
-  - 依存プラグイン: dressing.nvim, plenary.nvim, nui.nvim, img-clip.nvim, render-markdown.nvim
+- **claudecode.nvim**: Claude Code をNeovim内から操作
+  - Claude Codeトグル・フォーカス
+  - セッション再開・継続
+  - モデル選択
+  - バッファ追加・選択範囲送信
+  - インラインdiff受け入れ・拒否
+  - 依存プラグイン: folke/snacks.nvim
 
 ### 対応言語・ツール
 
@@ -228,14 +216,18 @@ setup.bat
 | `Prefix + v`    | コピーモード       |
 | `Prefix + c`    | 新規ウィンドウ     |
 | `Prefix + ^`    | 最後のウィンドウ   |
+| `Prefix + C-l`  | 画面クリア         |
 
 ### Neovim - 基本
 
-| キー         | 動作                 |
-| ------------ | -------------------- |
-| `jj`         | インサートモード終了 |
-| `<Esc><Esc>` | 検索ハイライト解除   |
-| `Y`          | 行末までヤンク       |
+| キー         | 動作                       |
+| ------------ | -------------------------- |
+| `jj`         | インサートモード終了       |
+| `<Esc><Esc>` | 検索ハイライト解除         |
+| `Y`          | 行末までヤンク             |
+| `<Space>m`   | treesj: 分割/結合トグル    |
+| `<Space>j`   | treesj: コードブロック結合 |
+| `<Space>s`   | treesj: コードブロック分割 |
 
 ### Neovim - LSP
 
@@ -253,50 +245,19 @@ setup.bat
 | `[d`        | 前の診断           |
 | `]d`        | 次の診断           |
 
-### Neovim - Copilot (インサートモード)
-
-| キー    | 動作                  |
-| ------- | --------------------- |
-| `C-J`   | 提案受け入れ          |
-| `C-L`   | 単語単位で受け入れ    |
-| `C-N`   | 次の提案              |
-| `C-K`   | 前の提案              |
-| `C-D`   | 提案拒否              |
-
-### Neovim - Copilot管理
-
-| キー          | 動作                  |
-| ------------- | --------------------- |
-| `<Leader>cpe` | Copilot有効化         |
-| `<Leader>cpd` | Copilot無効化         |
-| `<Leader>cps` | Copilotステータス確認 |
-
-### Neovim - CopilotChat
+### Neovim - Claude Code (claudecode.nvim)
 
 | キー          | 動作                     |
 | ------------- | ------------------------ |
-| `<Leader>cc`  | チャット開始             |
-| `<Leader>ccq` | クイックチャット         |
-| `<Leader>ccv` | 選択範囲でチャット (V)   |
-| `<Leader>ccx` | 選択範囲の修正 (V)       |
-| `<Leader>cch` | チャット履歴             |
-| `<Leader>ccr` | チャットリセット         |
-| `<Leader>ce`  | コード説明（日本語）     |
-| `<Leader>cr`  | コードレビュー（日本語） |
-| `<Leader>cf`  | バグ修正                 |
-| `<Leader>co`  | コード最適化             |
-| `<Leader>cd`  | ドキュメント生成         |
-| `<Leader>ct`  | テスト生成               |
-
-### Neovim - Avante.nvim
-
-| キー         | 動作           |
-| ------------ | -------------- |
-| `<Leader>aa` | Avante Ask     |
-| `<Leader>ar` | Avante Refresh |
-| `<Leader>ae` | Avante Edit    |
-| `<Leader>at` | Avante Toggle  |
-| `<Leader>af` | Avante Focus   |
+| `<Leader>ac`  | Claude Code トグル       |
+| `<Leader>af`  | Claude Code フォーカス   |
+| `<Leader>ar`  | セッション再開 (resume)  |
+| `<Leader>aC`  | セッション継続 (continue)|
+| `<Leader>am`  | モデル選択               |
+| `<Leader>ab`  | 現在バッファを追加       |
+| `<Leader>as`  | 選択範囲を送信 (V)       |
+| `<Leader>aa`  | diff 受け入れ            |
+| `<Leader>ad`  | diff 拒否                |
 
 ### Neovim - メモ機能 (memolist.vim)
 
@@ -316,66 +277,27 @@ setup.bat
 
 ## 🤖 AI機能の使い方
 
-### Copilot（copilot.lua）
+### Claude Code (claudecode.nvim)
 
-#### 基本的な使い方
-
-1. **Copilotの有効化**:
-
-   ```
-   <Leader>cpe または :Copilot enable
-   ```
-
-2. **Copilotの無効化**:
-
-   ```
-   <Leader>cpd または :Copilot disable
-   ```
-
-3. **ステータス確認**:
-   ```
-   <Leader>cps または :Copilot status
-   ```
-
-#### インサートモードでの補完
-
-- `C-J`: 提案を受け入れる
-- `C-L`: 単語単位で受け入れる
-- `C-N`: 次の提案
-- `C-K`: 前の提案
-- `C-D`: 提案を拒否
-
-### CopilotChat
+Neovim内からClaude Codeを操作できます。
 
 #### 基本操作
 
-- `<Leader>cc`: チャットウィンドウを開く
-- `<Leader>ccq`: クイックチャット（入力プロンプト）
-- `<Leader>ccv`: 選択範囲でチャット（ビジュアルモード）
-- `<Leader>ccx`: 選択範囲の修正（プロンプト入力、ビジュアルモード）
-- `<Leader>cch`: チャット履歴を表示
-- `<Leader>ccr`: チャットをリセット
+- `<Leader>ac`: Claude Codeウィンドウをトグル
+- `<Leader>af`: Claude Codeにフォーカス
+- `<Leader>ar`: 前回のセッションを再開
+- `<Leader>aC`: セッションを継続
+- `<Leader>am`: 使用するモデルを選択
 
-#### 専用プロンプト（日本語対応）
+#### バッファ・選択範囲の操作
 
-- `<Leader>ce`: コードの説明を日本語で要求
-- `<Leader>cr`: コードレビューを日本語で要求
-- `<Leader>cf`: バグ修正提案
-- `<Leader>co`: コード最適化提案
-- `<Leader>cd`: ドキュメント生成
-- `<Leader>ct`: テストコード生成
+- `<Leader>ab`: 現在のバッファをClaude Codeに追加
+- `<Leader>as`: 選択範囲をClaude Codeに送信（ビジュアルモード）
 
-### Avante.nvim
+#### diff操作
 
-高度なAIコーディングアシスタント機能を提供します：
-
-- `<Leader>aa`: AIに質問（ノーマルモード・ビジュアルモード）
-- `<Leader>ar`: Avanteを更新
-- `<Leader>ae`: Avanteエディット
-- `<Leader>at`: Avanteトグル
-- `<Leader>af`: Avanteにフォーカス
-
-Cursor IDEのようなインライン編集と、複数ファイルにまたがるリファクタリングが可能です。
+- `<Leader>aa`: Claude Codeの提案するdiffを受け入れ
+- `<Leader>ad`: Claude Codeの提案するdiffを拒否
 
 ## 📝 メモ機能
 
@@ -524,30 +446,11 @@ source ~/.bashrc
 :Mason
 ```
 
-#### Copilot認証エラー
-
-```vim
-" Copilotの設定状態を確認
-:Copilot status
-
-" 認証を再実行
-:Copilot setup
-```
-
-#### Avante.nvimがエラーを出す
-
-Avante.nvimは多くの依存関係があります：
+#### claudecode.nvimがエラーを出す
 
 ```bash
 # 必要な依存関係を確認
-# - copilot.lua
-# - dressing.nvim
-# - plenary.nvim
-# - nui.nvim
-# - img-clip.nvim
-# - render-markdown.nvim
-# - nvim-cmp
-# - nvim-web-devicons
+# - folke/snacks.nvim
 
 # Neovim内で再インストール
 :Lazy install
@@ -558,7 +461,7 @@ Avante.nvimは多くの依存関係があります：
 - **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
 - **Neovim**: 0.10.0以上（最新版推奨）
 - **ツール**: git, curl, wget
-- **Node.js**: 18.0.0以上（Copilot.lua, Avante.nvim用）
+- **Node.js**: 18.0.0以上（markdown-preview.nvim用）
 - **オプション**:
   - pyenv (Python開発用)
   - nvm (Node.js開発用)
@@ -572,7 +475,7 @@ Avante.nvimは多くの依存関係があります：
 - ローカル・リモート開発両方に対応
 - VS Code ターミナル統合と互換性があります
 - メモ機能でアイデアやTODOを素早く記録できます
-- AI機能（Copilot, CopilotChat, Avante）で開発効率が大幅に向上します
+- AI機能（Claude Code）で開発効率が大幅に向上します
 
 ## 🤝 貢献
 
