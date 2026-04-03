@@ -1,21 +1,17 @@
 #!/usr/bin/env bash
 
-# Neovim設定のセットアップ
 setup_neovim() {
-    setup_config "nvim" || exit 1
+    log_step "Neovim 設定をセットアップ中..."
+    setup_config "nvim"
 }
 
-# Lazy.nvimの初期化
 setup_lazy() {
-    if [ ! -d "$DOTFILES_DIR/nvim" ]; then
-        log_warn "Neovim設定が見つからないため、Lazy.nvimセットアップをスキップします"
+    if [[ ! -d "$DOTFILES_DIR/nvim" ]]; then
+        log_warn "Neovim 設定が見つかりません。Lazy.nvim セットアップをスキップします"
         return
     fi
 
-    log_info "Lazy.nvim プラグインマネージャーを初期化中..."
-
-    # Neovimを起動してプラグインをインストール
-    nvim --headless "+Lazy! sync" +qa
-
-    log_info "プラグインのインストールが完了しました"
+    log_info "Lazy.nvim プラグインを同期中..."
+    nvim --headless "+Lazy! sync" +qa 2>/dev/null \
+        || log_warn "Lazy sync に失敗しました。起動後に :Lazy sync を実行してください"
 }
