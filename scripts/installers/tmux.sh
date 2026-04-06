@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 setup_tmux() {
     log_step "tmux 設定をセットアップ中..."
@@ -15,7 +16,10 @@ setup_tpm() {
 
     if [[ ! -d "$tpm_dir" ]]; then
         log_info "TPM をインストール中..."
-        git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+        if ! git clone https://github.com/tmux-plugins/tpm "$tpm_dir"; then
+            log_warn "TPM のクローンに失敗しました。ネットワークを確認してください"
+            return 0
+        fi
     else
         log_info "TPM は既にインストールされています"
     fi

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 setup_bash() {
     log_step "bash 設定をセットアップ中..."

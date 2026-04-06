@@ -13,7 +13,7 @@ return {
                 formatters_by_ft = {
                     python = { 'black', 'isort' },
                     javascript = { 'prettier' },
-                    typepscript = { 'prettier' },
+                    typescript = { 'prettier' },
                     rust = { 'rustfmt' },
                     lua = { 'stylua' },
                     go = { 'gofmt' },

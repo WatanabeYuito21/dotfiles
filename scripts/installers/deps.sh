@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 check_dependencies() {
     log_step "依存関係をチェック中..."

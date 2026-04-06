@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 setup_neovim() {
     log_step "Neovim 設定をセットアップ中..."

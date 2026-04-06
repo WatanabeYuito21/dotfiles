@@ -4,6 +4,9 @@
 local M = {}
 
 function M.setup(capabilities)
+    -- 有効にするサーバーのリスト
+    local servers_to_enable = {}
+
     -- Lua言語サーバー設定
     if vim.fn.executable('lua-language-server') == 1 then
         vim.lsp.config.lua_ls = {
@@ -20,6 +23,7 @@ function M.setup(capabilities)
                 },
             },
         }
+        table.insert(servers_to_enable, 'lua_ls')
     end
 
     -- Python言語サーバー設定
@@ -27,6 +31,7 @@ function M.setup(capabilities)
         vim.lsp.config.pyright = {
             capabilities = capabilities,
         }
+        table.insert(servers_to_enable, 'pyright')
     end
 
     -- JavaScript/TypeScript言語サーバー設定
@@ -34,6 +39,7 @@ function M.setup(capabilities)
         vim.lsp.config.ts_ls = {
             capabilities = capabilities,
         }
+        table.insert(servers_to_enable, 'ts_ls')
     end
 
     -- Rust言語サーバー設定
@@ -54,6 +60,7 @@ function M.setup(capabilities)
                 },
             },
         }
+        table.insert(servers_to_enable, 'rust_analyzer')
     end
 
     -- Go言語サーバー設定
@@ -61,6 +68,7 @@ function M.setup(capabilities)
         vim.lsp.config.gopls = {
             capabilities = capabilities,
         }
+        table.insert(servers_to_enable, 'gopls')
     end
 
     -- PowerShell言語サーバー設定
@@ -68,6 +76,7 @@ function M.setup(capabilities)
         vim.lsp.config.powershell_es = {
             capabilities = capabilities,
         }
+        table.insert(servers_to_enable, 'powershell_es')
     end
 
     -- Markdown言語サーバー設定
@@ -75,7 +84,11 @@ function M.setup(capabilities)
         vim.lsp.config.marksman = {
             capabilities = capabilities,
         }
+        table.insert(servers_to_enable, 'marksman')
     end
+
+    -- 設定したサーバーを有効化
+    vim.lsp.enable(servers_to_enable)
 end
 
 return M

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 setup_wsl() {
     if ! is_wsl; then
