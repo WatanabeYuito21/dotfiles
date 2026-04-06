@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Linux / WSL
 ./setup.sh                        # 全設定をセットアップ
 ./setup.sh --skip-wsl             # WSL設定をスキップ
-./setup.sh --skip-nvim --skip-tmux
+./setup.sh --skip-nvim --skip-tmux --skip-bash
 
 # Windows (PowerShell)
 .\setup.ps1
@@ -79,6 +79,8 @@ nvim/lua/
     ├── servers.lua      # 言語別サーバー設定（vim.lsp.config API）
     ├── handlers.lua     # diagnostics 表示・キーバインド設定
     └── capabilities.lua # nvim-cmp との連携
+└── utils/
+    └── init.lua         # 汎用ユーティリティ（拡張用プレースホルダー）
 ```
 
 **新しい言語を追加する場合**:
@@ -87,6 +89,11 @@ nvim/lua/
 3. Mason（`:Mason`）またはシステムパッケージマネージャーでツールをインストール
 
 **プラグインを追加する場合**: `nvim/lua/plugins/init.lua` の lazy.nvim プラグインリストに追記し、設定が多い場合は対応する `*.lua` ファイル（`ui.lua`, `editor.lua` 等）に分割する。
+
+### WSL設定 (`wsl/`)
+
+- `wsl/wsl.conf` は `/etc/wsl.conf` へシンボリックリンクされる
+- systemd 有効化・Windows PATH 汚染防止（`appendWindowsPath=false`）・ロケール設定を含む
 
 ### bash (`bash/bashrc`)
 
