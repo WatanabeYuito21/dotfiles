@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # 既存ファイルのバックアップ
 backup_if_exists() {

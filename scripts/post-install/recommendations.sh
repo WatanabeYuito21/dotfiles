@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 show_recommendations() {
     log_step "セットアップ後の推奨事項:"

@@ -45,17 +45,7 @@ return {
             {'<Leader>mg', '<cmd>MemoGrep<cr>', desc = 'Grep Memos'},
         },
         init = function()
-            local memolist_path
-
-            local is_wsl = vim.fn.filereadable('/proc/version') == 1 and vim.fn.readfile('/proc/version')[1]:match('microsoft') ~=nil
-
-            if is_wsl or vim.fn.has('unix') == 1 then
-                memolist_path = vim.fn.expand('~/Documents/memolist')
-            elseif vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
-                memolist_path = vim.fn.expand('~/Documents/memolist')
-            else
-                memolist_path = vim.fn.expand('~/Documents/memolist')
-            end
+            local memolist_path = vim.fn.expand('~/Documents/memolist')
 
             if vim.fn.isdirectory(memolist_path) == 0 then
                 vim.fn.mkdir(memolist_path, 'p')
