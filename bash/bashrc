@@ -211,6 +211,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# UseLLMHook supply chain cooldown
+export PIP_UPLOADED_PRIOR_TO=$(date -u -d '14 days ago' '+%Y-%m-%dT%H:%M:%S+00:00' 2>/dev/null || date -u -v-14d '+%Y-%m-%dT%H:%M:%S+00:00' 2>/dev/null || echo '')
+export UV_EXCLUDE_NEWER=$(date -u -d '14 days ago' '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -v-14d '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo '')
+
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 if command -v uv &>/dev/null; then
     eval "$(uv generate-shell-completion bash)"
@@ -222,10 +226,6 @@ export QT_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 alias obsidian="ibus-daemon -drx && /opt/Obsidian/obsidian --disable-gpu --no-sandbox"
 [ -f ~/.bashrc_im ] && source ~/.bashrc_im
-
-# UseLLMHook supply chain cooldown
-export PIP_UPLOADED_PRIOR_TO=$(date -u -d '14 days ago' '+%Y-%m-%dT%H:%M:%S+00:00' 2>/dev/null || date -u -v-14d '+%Y-%m-%dT%H:%M:%S+00:00' 2>/dev/null || echo '')
-export UV_EXCLUDE_NEWER="14 days"
 
 # multi-agent-shogun aliases (added by first_setup.sh)
 css() { local s="shogun-$$"; local cols=$(tput cols 2>/dev/null || echo 80); tmux new-session -d -t shogun -s "$s" 2>/dev/null && tmux set-option -t "$s" destroy-unattached on 2>/dev/null; if [ "$cols" -lt 80 ]; then tmux new-window -t "$s" -n mobile 2>/dev/null; tmux attach-session -t "$s:mobile" 2>/dev/null || tmux attach-session -t shogun; else tmux attach-session -t "$s" 2>/dev/null || tmux attach-session -t shogun; fi; }
