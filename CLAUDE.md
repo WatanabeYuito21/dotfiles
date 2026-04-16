@@ -6,9 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Linux / WSL
-./setup.sh                        # 全設定をセットアップ
-./setup.sh --skip-wsl             # WSL設定をスキップ
+./setup.sh                             # 全設定をセットアップ
+./setup.sh --skip-wsl                  # WSL設定をスキップ
 ./setup.sh --skip-nvim --skip-tmux --skip-bash
+
+# 特定コンポーネントのみ実行（カンマ区切りまたは繰り返し指定）
+./setup.sh --only nvim
+./setup.sh --only=nvim,tmux
+./setup.sh --only nvim --only tmux
+
+# 状態を変更せず実行内容のみ確認
+./setup.sh --dry-run
+./setup.sh --only nvim --dry-run
 
 # Windows (PowerShell)
 .\setup.ps1
@@ -17,6 +26,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Windows (コマンドプロンプト・管理者権限推奨)
 setup.bat
 ```
+
+`--only` と `--skip-*` は併用不可。対応コンポーネント: `nvim` `tmux` `bash` `wsl`。`--only nvim` は Lazy sync まで、`--only tmux` は TPM 初期化まで含めて実行される。
 
 WSL設定を適用した後は WSL を再起動する必要がある（`wsl --shutdown`）。
 
@@ -39,7 +50,7 @@ scripts/
 ├── lib/
 │   ├── logger.sh      # log_info / log_warn / log_error / log_step
 │   ├── backup.sh      # backup_if_exists（タイムスタンプ付きリネーム）
-│   └── utils.sh       # is_wsl, setup_config（~/.config/へリンク）, setup_home_config
+│   └── utils.sh       # is_wsl, run_cmd（dry-run対応）, setup_config, setup_home_config
 ├── installers/
 │   ├── deps.sh        # check_dependencies（nvim・git は必須、他はオプション）
 │   ├── nvim.sh        # setup_neovim, setup_lazy
@@ -47,13 +58,13 @@ scripts/
 │   ├── bash.sh        # setup_bash
 │   └── wsl.sh         # setup_wsl
 └── post-install/
-    ├── plugins.sh         # setup_plugins（setup_lazy + setup_tpm を呼ぶ）
     └── recommendations.sh # show_recommendations
 ```
 
 - `DOTFILES_DIR` は `scripts/setup.sh` 内で `BASH_SOURCE` から自動決定（ハードコードしない）
 - `setup_config "nvim"` は `$DOTFILES_DIR/nvim` → `~/.config/nvim` へシンボリックリンクを作成
 - `setup_home_config` はホームディレクトリへのファイルリンク用
+- state を変更するシェル操作（`rm` / `mkdir` / `ln` / `mv` / `cp` / `git clone` / `nvim --headless`）は `run_cmd` 経由で呼ぶこと。`DRY_RUN=true` 時は実行せずログ出力に切り替わる
 - 非致命的なステップ（オプション依存、WSL設定など）は失敗しても `return 0` で続行する
 - `.bashrc` はシンボリックリンクのため、スクリプトから直接追記しない（リポジトリ本体が書き換わる）
 

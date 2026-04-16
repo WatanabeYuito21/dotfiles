@@ -13,6 +13,6 @@ setup_lazy() {
     fi
 
     log_info "Lazy.nvim プラグインを同期中..."
-    nvim --headless "+Lazy! sync" +qa 2>/dev/null \
+    run_cmd nvim --headless "+Lazy! sync" +qa 2>/dev/null \
         || log_warn "Lazy sync に失敗しました。起動後に :Lazy sync を実行してください"
 }

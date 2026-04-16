@@ -16,7 +16,7 @@ setup_tpm() {
 
     if [[ ! -d "$tpm_dir" ]]; then
         log_info "TPM をインストール中..."
-        if ! git clone https://github.com/tmux-plugins/tpm "$tpm_dir"; then
+        if ! run_cmd git clone https://github.com/tmux-plugins/tpm "$tpm_dir"; then
             log_warn "TPM のクローンに失敗しました。ネットワークを確認してください"
             return 0
         fi
@@ -26,7 +26,7 @@ setup_tpm() {
 
     if command -v tmux &>/dev/null && tmux list-sessions &>/dev/null 2>&1; then
         log_info "tmux プラグインをインストール中..."
-        "$tpm_dir/scripts/install_plugins.sh"
+        run_cmd "$tpm_dir/scripts/install_plugins.sh"
     else
         log_info "tmux が起動していません。起動後に Prefix + I でプラグインをインストールしてください"
     fi
