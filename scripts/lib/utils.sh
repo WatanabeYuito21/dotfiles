@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DRY_RUN="${DRY_RUN:-false}"
+
+# dry-run 対応の実行ヘルパー。状態を変更するシェル操作はすべてこれ経由で呼ぶ
+run_cmd() {
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[dry-run] $*"
+        return 0
+    fi
+    "$@"
+}
+
 # WSL環境検出
 is_wsl() {
     [[ -n "${WSL_DISTRO_NAME:-}" ]] || [[ -f /proc/sys/fs/binfmt_misc/WSLInterop ]]
@@ -17,12 +28,12 @@ setup_config() {
         return 0
     fi
 
-    mkdir -p "$(dirname "$dst")"
+    run_cmd mkdir -p "$(dirname "$dst")"
 
-    [[ -L "$dst" ]] && rm "$dst"
+    [[ -L "$dst" ]] && run_cmd rm "$dst"
     [[ -d "$dst" ]] && backup_if_exists "$dst"
 
-    ln -sf "$src" "$dst"
+    run_cmd ln -sf "$src" "$dst"
     log_info "$name: リンク作成 $dst -> $src"
 }
 
@@ -35,9 +46,9 @@ setup_home_config() {
         return 0
     fi
 
-    [[ -L "$dst" ]] && rm "$dst"
+    [[ -L "$dst" ]] && run_cmd rm "$dst"
     [[ -f "$dst" ]] && backup_if_exists "$dst"
 
-    ln -sf "$src" "$dst"
+    run_cmd ln -sf "$src" "$dst"
     log_info "$name: リンク作成 $dst -> $src"
 }

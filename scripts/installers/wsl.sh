@@ -16,8 +16,8 @@ setup_wsl() {
         return 0
     fi
 
-    mkdir -p "$HOME/.wsl"
-    cp "$src" "$HOME/.wsl/wsl.conf"
+    run_cmd mkdir -p "$HOME/.wsl"
+    run_cmd cp "$src" "$HOME/.wsl/wsl.conf"
     log_info "WSL 設定を ~/.wsl/wsl.conf にコピーしました"
     log_info "適用するには: sudo cp ~/.wsl/wsl.conf /etc/wsl.conf && wsl --shutdown"
 }
