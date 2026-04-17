@@ -3,19 +3,19 @@
 
 return {
     {
-        -- LSP設定
+        -- LSPサーバー管理ツール
         'williamboman/mason.nvim',
         config = function()
             require('mason').setup()
         end,
     },
     {
-        -- LSPサーバー自動インストール
+        -- スニペットエンジン
         'L3MON4D3/LuaSnip',
         build = 'make install_jsregexp',
     },
     {
-        -- スニペットエンジン
+        -- 補完エンジン
         'hrsh7th/nvim-cmp',
         dependencies  = {
             'hrsh7th/cmp-nvim-lsp',
