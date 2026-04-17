@@ -42,7 +42,7 @@ dotfiles/
 │   │   └── utils/          # ユーティリティ
 │   ├── colors/molokai.vim  # カラースキーム
 │   └── templates/          # テンプレートファイル
-│       └── memolist.txt    # メモテンプレート
+│       └── md.txt          # メモテンプレート（suffix=md 用）
 ├── wsl/
 │   └── wsl.conf            # WSL設定
 ├── scripts/
@@ -316,8 +316,8 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 ### メモの保存場所
 
 - **パス**: `~/Documents/memolist/`
-- **形式**: テキストファイル (`.txt`)
-- **ファイル名**: `YYYYMMDD_HH:MM-メモタイトル.txt`
+- **形式**: Markdownファイル (`.md`)
+- **ファイル名**: `YYYYMMDD_メモタイトル.md`
 
 ### 使い方
 

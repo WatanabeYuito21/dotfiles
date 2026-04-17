@@ -101,6 +101,8 @@ nvim/lua/
 
 **プラグインを追加する場合**: `nvim/lua/plugins/init.lua` の lazy.nvim プラグインリストに追記し、設定が多い場合は対応する `*.lua` ファイル（`ui.lua`, `editor.lua` 等）に分割する。
 
+**`nvim/pack/` について**: `nvim/pack/github/start/copilot.vim` は Vim ネイティブパッケージとして管理（lazy.nvim 管理外）。`:Lazy update` では更新されない。更新時は `cd nvim/pack/github/start/copilot.vim && git pull` を手動実行する。
+
 ### WSL設定 (`wsl/`)
 
 - `wsl/wsl.conf` は `/etc/wsl.conf` へシンボリックリンクされる
