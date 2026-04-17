@@ -1,21 +1,38 @@
-# Neovim用の除外設定
+# Neovim
 lazy-lock.json
-.DS_Store
-*.log
 .netrwhist
+*.luac
+nvim/pack/
 
-# 一時ファイル
+# ログ・一時ファイル
+*.log
 *.tmp
 *.swp
 *.swo
 *~
 
 # OS固有ファイル
+.DS_Store
 Thumbs.db
+
+# IDE・エディタ設定
+.vscode/
+.idea/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Node.js
+node_modules/
 
 # tmux plugin manager (TPM)で管理されるプラグイン
 tmux/plugins/
 tmux/resurrect
 
-# tmux一時ファイル
-*.tmux
+# AppImage・バイナリ
+*.appimage
+*.AppImage
