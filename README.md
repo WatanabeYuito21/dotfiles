@@ -150,6 +150,16 @@ cd ~/dotfiles
 chmod +x setup.sh
 ./setup.sh
 
+# 変更内容を事前確認（dry-run）
+./setup.sh --dry-run
+
+# 特定コンポーネントのみ再セットアップ
+./setup.sh --only nvim           # nvim のみ（Lazy sync 含む）
+./setup.sh --only nvim,tmux      # nvim + tmux
+./setup.sh --only bash --dry-run # bash のみ dry-run
+
+# 対応コンポーネント: nvim / tmux / bash / wsl
+
 # bash設定を反映
 source ~/.bashrc
 
