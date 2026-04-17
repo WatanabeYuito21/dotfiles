@@ -86,9 +86,6 @@ cmd('syntax on')
 -- cmd('colorscheme spring-night')
 cmd('colorscheme gruvbox')
 
--- 256色表示
-cmd('set t_Co=256')
-
 -- 透過設定
 cmd('highlight Normal guibg=none')
 cmd('highlight NonText guibg=none')
