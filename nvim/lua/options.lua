@@ -34,9 +34,6 @@ opt.fileencoding = 'utf-8'
 opt.fileencodings = { 'ucs-boms', 'utf-8', 'enc-jp', 'cp932' }
 opt.fileformats = { 'dos', 'unix', 'mac' }
 
--- 曖昧文字幅固定設定
-opt.ambiwidth = 'double'
-
 -- 制御文字表示設定
 opt.list = true
 opt.listchars = { tab = '>-', trail = '*', nbsp = '+' }
