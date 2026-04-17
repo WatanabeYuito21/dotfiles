@@ -469,7 +469,7 @@ source ~/.bashrc
 ## 📋 要件
 
 - **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
-- **Neovim**: 0.10.0以上（最新版推奨）
+- **Neovim**: 0.11.0以上（最新版推奨）
 - **ツール**: git, curl, wget
 - **Node.js**: 18.0.0以上（markdown-preview.nvim用）
 - **オプション**:
