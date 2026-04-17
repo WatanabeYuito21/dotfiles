@@ -17,7 +17,7 @@ return {
                     rust = { 'rustfmt' },
                     lua = { 'stylua' },
                     go = { 'gofmt' },
-                    powerml = { 'pwshfmt' },
+                    ps1 = { 'prettier' },
                     markdown = { 'prettier' },
                 },
 
