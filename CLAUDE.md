@@ -21,13 +21,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Windows (PowerShell)
 .\setup.ps1
+.\setup.ps1 -DryRun
+.\setup.ps1 -Only nvim
+.\setup.ps1 -Only nvim,wsl -DryRun
 .\setup.ps1 -SkipNvim -SkipPlugins
+.\setup.ps1 -SkipWSL
 
 # Windows (コマンドプロンプト・管理者権限推奨)
 setup.bat
+setup.bat --dry-run
+setup.bat --only nvim
+setup.bat --only nvim,wsl --dry-run
+setup.bat --skip-nvim
+setup.bat --skip-wsl
 ```
 
-`--only` と `--skip-*` は併用不可。対応コンポーネント: `nvim` `tmux` `bash` `wsl`。`--only nvim` は Lazy sync まで、`--only tmux` は TPM 初期化まで含めて実行される。
+`--only` と `--skip-*` は併用不可。Linux/WSL の対応コンポーネント: `nvim` `tmux` `bash` `wsl`。Windows の対応コンポーネント: `nvim` `wsl`。`--only nvim` は Lazy sync まで含めて実行される。
 
 WSL設定を適用した後は WSL を再起動する必要がある（`wsl --shutdown`）。
 
