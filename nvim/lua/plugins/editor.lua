@@ -5,7 +5,13 @@ return {
     {
         -- コメントアウトを簡単にするプラグイン
         'numToStr/Comment.nvim',
-        opts = {},
+        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        opts = function()
+            require('ts_context_commentstring').setup({ enable_autocmd = false })
+            return {
+                pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+            }
+        end,
     },
     {
         -- コードの折りたたみを強化するプラグイン
