@@ -133,11 +133,23 @@ fix_wsl2_interop() {
 # =====================================
 
 # pyenv設定（WSL2/Linux用）
-if [ -d "$HOME/.pyenv" ]; then
+if [ -d "$HOME/.pyenv" ] && command -v pyenv &>/dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
+    [[ ":$PATH:" != *":$PYENV_ROOT/shims:"* ]] && export PATH="$PYENV_ROOT/shims:$PATH"
+    export PYENV_SHELL=bash
+    source "$PYENV_ROOT/completions/pyenv.bash" 2>/dev/null
+    command pyenv rehash 2>/dev/null
+    pyenv() {
+        local command="${1:-}"
+        [ "$#" -gt 0 ] && shift
+        case "$command" in
+        activate|deactivate|rehash|shell)
+            eval "$(pyenv "sh-$command" "$@")";;
+        *)
+            command pyenv "$command" "$@";;
+        esac
+    }
 fi
 
 # =====================================
@@ -221,7 +233,9 @@ export XMODIFIERS=@im=ibus
 [ -f ~/.bashrc_im ] && source ~/.bashrc_im
 
 # Host-specific configuration
-_bashrc_host="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/bash/local/$(hostname -s).bashrc"
+_bashrc_src="$(readlink -f "${BASH_SOURCE[0]}")"
+_bashrc_host="$(dirname "$(dirname "$_bashrc_src")")/bash/local/$(hostname -s).bashrc"
+unset _bashrc_src
 [ -f "$_bashrc_host" ] && source "$_bashrc_host"
 unset _bashrc_host
 
