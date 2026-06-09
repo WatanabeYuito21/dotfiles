@@ -220,6 +220,11 @@ export XMODIFIERS=@im=ibus
 [ -x /opt/Obsidian/obsidian ] && alias obsidian="ibus-daemon -drx && /opt/Obsidian/obsidian --disable-gpu --no-sandbox"
 [ -f ~/.bashrc_im ] && source ~/.bashrc_im
 
+# Host-specific configuration
+_bashrc_host="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")/bash/local/$(hostname -s).bashrc"
+[ -f "$_bashrc_host" ] && source "$_bashrc_host"
+unset _bashrc_host
+
 # multi-agent-shogun aliases (added by first_setup.sh)
 css() { local s="shogun-$$"; local cols=$(tput cols 2>/dev/null || echo 80); tmux new-session -d -t shogun -s "$s" 2>/dev/null && tmux set-option -t "$s" destroy-unattached on 2>/dev/null; if [ "$cols" -lt 80 ]; then tmux new-window -t "$s" -n mobile 2>/dev/null; tmux attach-session -t "$s:mobile" 2>/dev/null || tmux attach-session -t shogun; else tmux attach-session -t "$s" 2>/dev/null || tmux attach-session -t shogun; fi; }
 csm() { local s="multi-$$"; local cols=$(tput cols 2>/dev/null || echo 80); tmux new-session -d -t multiagent -s "$s" 2>/dev/null && tmux set-option -t "$s" destroy-unattached on 2>/dev/null; if [ "$cols" -lt 80 ]; then tmux new-window -t "$s" -n mobile 2>/dev/null; tmux attach-session -t "$s:mobile" 2>/dev/null || tmux attach-session -t multiagent; else tmux attach-session -t "$s" 2>/dev/null || tmux attach-session -t multiagent; fi; }

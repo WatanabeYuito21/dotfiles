@@ -17,7 +17,8 @@
 ```
 dotfiles/
 ├── bash/
-│   └── bashrc              # 強化されたBash設定
+│   ├── bashrc              # 強化されたBash設定
+│   └── local/              # ホスト固有設定（<hostname>.bashrc を配置）
 ├── tmux/
 │   └── tmux.conf           # プラグイン対応Tmux設定
 ├── nvim/
@@ -66,6 +67,7 @@ dotfiles/
   - Node.js (nvm)
 - **日本語環境**: UTF-8ロケール完全対応
 - **便利なエイリアス**: WSL設定適用コマンドなど
+- **ホスト固有設定**: `bash/local/<hostname>.bashrc` を配置するとその端末だけで自動読み込み（ファイルがなければスキップ）
 
 ### Tmux設定
 
@@ -382,6 +384,22 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 - `bash/bashrc`にエイリアスや関数を追加
 - `~/.bash_aliases`で追加エイリアスを作成
 - 必要に応じて環境変数を変更
+
+#### ホスト固有設定
+
+端末ごとに異なる設定は `bash/local/<hostname>.bashrc` に記述する：
+
+```bash
+# ホスト名を確認
+hostname -s
+
+# 例: bash/local/my-laptop.bashrc
+export MY_ENV=work
+alias proj='cd ~/projects/myproject'
+```
+
+全体の `bashrc` が読み込まれた後に自動 source される。ファイルがない端末ではスキップされる。
+リポジトリで管理したくない場合は `.gitignore` に `bash/local/*.bashrc` を追加する。
 
 ## 🔄 更新
 
