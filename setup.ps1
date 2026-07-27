@@ -1,4 +1,4 @@
-# Windows 用 dotfiles セットアップスクリプト (PowerShell)
+﻿# Windows 用 dotfiles セットアップスクリプト (PowerShell)
 # 使用方法: .\setup.ps1 [-SkipNvim] [-SkipPlugins] [-SkipWSL] [-Only nvim,wsl] [-DryRun] [-Help]
 
 param(
