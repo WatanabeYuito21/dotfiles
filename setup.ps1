@@ -37,6 +37,9 @@ function Show-Help {
   -DryRun        実行内容を表示するだけで変更しない
   -Help          このヘルプを表示
 
+-Only / -Skip* のいずれも指定しない場合、対話的にコンポーネントを選択します
+（非対話環境では全コンポーネントをインストールします）
+
 例:
   .\setup.ps1
   .\setup.ps1 -DryRun
@@ -210,6 +213,37 @@ function Should-Run {
     return $components -contains $Component.ToLower()
 }
 
+# ===== 対話的コンポーネント選択 =====
+# 未指定時に呼び出し、選択されたコンポーネント配列を返す
+function Select-Components {
+    $valid = @("nvim", "wsl")
+    Write-InfoLog "インストールするコンポーネントを選択してください:"
+    for ($i = 0; $i -lt $valid.Count; $i++) {
+        Write-Host ("  {0}) {1}" -f ($i + 1), $valid[$i])
+    }
+    $response = (Read-Host "`n番号をスペース/カンマ区切りで入力（例: 1 2）、'a' で全て、空 Enter で全て").Trim()
+
+    if ($response -eq "" -or $response -eq "a" -or $response -eq "all") {
+        return $valid
+    }
+
+    $selected = @()
+    foreach ($token in ($response -split '[,\s]+' | Where-Object { $_ -ne "" })) {
+        if ($token -match '^\d+$' -and [int]$token -ge 1 -and [int]$token -le $valid.Count) {
+            $selected += $valid[[int]$token - 1]
+        } else {
+            Write-ErrorLog "無効な選択です: $token"
+            exit 1
+        }
+    }
+
+    if ($selected.Count -eq 0) {
+        Write-WarnLog "コンポーネントが選択されませんでした。処理を終了します"
+        exit 0
+    }
+    return $selected
+}
+
 # ===== メイン =====
 function Main {
     if ($Help) {
@@ -221,6 +255,19 @@ function Main {
     if ($Only.Count -gt 0 -and ($SkipNvim -or $SkipPlugins -or $SkipWSL)) {
         Write-ErrorLog "-Only と -Skip* は併用できません"
         exit 1
+    }
+
+    # 選択指定がない場合は対話的に選択（非対話環境では全インストール）
+    $selectionSpecified = ($Only.Count -gt 0) -or $SkipNvim -or $SkipPlugins -or $SkipWSL
+    if (-not $selectionSpecified) {
+        $interactive = $true
+        try { $interactive = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected } catch { $interactive = $true }
+        if ($interactive) {
+            $Only = Select-Components
+            Write-InfoLog "選択したコンポーネント: $($Only -join ', ')"
+        } else {
+            Write-WarnLog "非対話環境のため全コンポーネントをインストールします"
+        }
     }
 
     # 有効なコンポーネント検証
