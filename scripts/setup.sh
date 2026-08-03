@@ -24,6 +24,7 @@ SKIP_BASH=false
 SKIP_WSL=false
 DRY_RUN=false
 ONLY_COMPONENTS=()
+SELECTION_SPECIFIED=false
 
 usage() {
     cat <<EOF
@@ -43,6 +44,9 @@ Components: ${VALID_COMPONENTS[*]}
 
 --only は繰り返し指定可能（例: --only nvim --only tmux）
 --only と --skip-* の併用はエラーとなります
+
+--only / --skip-* のいずれも指定しない場合、対話的にコンポーネントを選択します
+（非対話環境では全コンポーネントをインストールします）
 EOF
 }
 
@@ -70,10 +74,10 @@ add_only_components() {
 
 while (($#)); do
     case "$1" in
-        --skip-nvim) SKIP_NVIM=true ;;
-        --skip-tmux) SKIP_TMUX=true ;;
-        --skip-bash) SKIP_BASH=true ;;
-        --skip-wsl)  SKIP_WSL=true ;;
+        --skip-nvim) SKIP_NVIM=true; SELECTION_SPECIFIED=true ;;
+        --skip-tmux) SKIP_TMUX=true; SELECTION_SPECIFIED=true ;;
+        --skip-bash) SKIP_BASH=true; SELECTION_SPECIFIED=true ;;
+        --skip-wsl)  SKIP_WSL=true;  SELECTION_SPECIFIED=true ;;
         --dry-run)   DRY_RUN=true ;;
         --only)
             shift
@@ -82,9 +86,11 @@ while (($#)); do
                 exit 1
             fi
             add_only_components "$1"
+            SELECTION_SPECIFIED=true
             ;;
         --only=*)
             add_only_components "${1#--only=}"
+            SELECTION_SPECIFIED=true
             ;;
         --help|-h)
             usage
@@ -127,9 +133,58 @@ should_run() {
     return 1
 }
 
+# 対話的にインストール対象コンポーネントを選択する。
+# 選択結果は ONLY_COMPONENTS に格納される。
+interactive_select() {
+    log_info "インストールするコンポーネントを選択してください:"
+    local i
+    for i in "${!VALID_COMPONENTS[@]}"; do
+        printf "  %d) %s\n" "$((i + 1))" "${VALID_COMPONENTS[$i]}" >&2
+    done
+    printf "\n番号をスペース/カンマ区切りで入力（例: 1 3）、'a' で全て、空 Enter で全て: " >&2
+
+    local input
+    read -r input || input=""
+    input="${input//,/ }"
+
+    if [[ -z "$input" || "$input" == "a" || "$input" == "all" ]]; then
+        ONLY_COMPONENTS=("${VALID_COMPONENTS[@]}")
+        log_info "全コンポーネントを選択しました: ${ONLY_COMPONENTS[*]}"
+        return 0
+    fi
+
+    local token
+    local -a selected=()
+    for token in $input; do
+        if [[ "$token" =~ ^[0-9]+$ ]] && ((token >= 1 && token <= ${#VALID_COMPONENTS[@]})); then
+            selected+=("${VALID_COMPONENTS[$((token - 1))]}")
+        else
+            log_error "無効な選択です: $token"
+            exit 1
+        fi
+    done
+
+    if ((${#selected[@]} == 0)); then
+        log_warn "コンポーネントが選択されませんでした。処理を終了します"
+        exit 0
+    fi
+
+    ONLY_COMPONENTS=("${selected[@]}")
+    log_info "選択したコンポーネント: ${ONLY_COMPONENTS[*]}"
+}
+
 main() {
     log_info "dotfiles セットアップを開始します (DOTFILES_DIR=$DOTFILES_DIR)"
     $DRY_RUN && log_warn "dry-run モード: 状態は変更されません"
+
+    # 選択指定がない場合は対話的に選択（非対話環境では全インストール）
+    if ! $SELECTION_SPECIFIED; then
+        if [[ -t 0 ]]; then
+            interactive_select
+        else
+            log_warn "非対話環境のため全コンポーネントをインストールします"
+        fi
+    fi
 
     check_dependencies
 
