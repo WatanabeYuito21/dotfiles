@@ -37,6 +37,24 @@ goto show_help
 REM ===== ヘルプ =====
 if defined SHOW_HELP goto show_help
 
+REM ===== 未指定時は対話的にコンポーネントを選択 =====
+set "SELECTION_SPECIFIED="
+if defined ONLY         set "SELECTION_SPECIFIED=1"
+if defined SKIP_NVIM    set "SELECTION_SPECIFIED=1"
+if defined SKIP_PLUGINS set "SELECTION_SPECIFIED=1"
+if defined SKIP_WSL     set "SELECTION_SPECIFIED=1"
+
+if not defined SELECTION_SPECIFIED (
+    echo.
+    echo インストールするコンポーネントを選択してください:
+    echo   1^) nvim
+    echo   2^) wsl
+    echo.
+    set /p "SEL=番号をスペース区切りで入力（例: 1 2）、a=全て、空 Enter=全て: "
+    call :resolve_selection
+    if errorlevel 1 exit /b 1
+)
+
 REM ===== --only と --skip-* の併用チェック =====
 if defined ONLY (
     if defined SKIP_NVIM    ( echo [ERROR] --only と --skip-* は併用できません & exit /b 1 )
@@ -208,6 +226,34 @@ echo     wsl --shutdown
 echo.
 exit /b 0
 
+REM ===== 対話選択の解決 =====
+:resolve_selection
+if not defined SEL   ( set "ONLY=nvim,wsl" & exit /b 0 )
+if /i "%SEL%"=="a"   ( set "ONLY=nvim,wsl" & exit /b 0 )
+if /i "%SEL%"=="all" ( set "ONLY=nvim,wsl" & exit /b 0 )
+
+set "ONLY="
+for %%t in (%SEL%) do (
+    if "%%~t"=="1" (
+        set "ONLY=!ONLY!,nvim"
+    ) else if "%%~t"=="2" (
+        set "ONLY=!ONLY!,wsl"
+    ) else (
+        echo [ERROR] 無効な選択です: %%~t
+        pause
+        exit /b 1
+    )
+)
+
+if not defined ONLY (
+    echo [WARN] コンポーネントが選択されませんでした。全コンポーネントをインストールします
+    set "ONLY=nvim,wsl"
+    exit /b 0
+)
+REM 先頭のカンマを除去
+set "ONLY=!ONLY:~1!"
+exit /b 0
+
 REM ===== ヘルプ =====
 :show_help
 echo.
@@ -221,6 +267,9 @@ echo   --only ^<list^>    指定コンポーネントのみ実行 (例: --only n
 echo                    有効な値: nvim, wsl
 echo   --dry-run        実行内容を表示するだけで変更しない
 echo   --help, -h       このヘルプを表示
+echo.
+echo --only / --skip-* のいずれも指定しない場合、対話的に選択します
+echo （非対話環境では全コンポーネントをインストールします）
 echo.
 echo 例:
 echo   setup.bat
