@@ -148,6 +148,8 @@ dotfiles/
 git clone https://github.com/WatanabeYuito21/dotfiles.git ~/dotfiles
 
 # セットアップスクリプトを実行
+# （--only / --skip-* 未指定時はインストールするコンポーネントを対話的に選択。
+#   非対話環境では全コンポーネントをインストール）
 cd ~/dotfiles
 chmod +x setup.sh
 ./setup.sh
@@ -198,6 +200,7 @@ wsl --shutdown
 git clone https://github.com/WatanabeYuito21/dotfiles.git $env:USERPROFILE\dotfiles
 
 # PowerShellセットアップスクリプトを実行
+# （-Only / -Skip* 未指定時はコンポーネントを対話的に選択。非対話環境では全インストール）
 cd $env:USERPROFILE\dotfiles
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # 初回のみ
 .\setup.ps1
@@ -214,6 +217,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # 初回�
 
 ```cmd
 # リポジトリをクローン後、コマンドプロンプトを管理者として実行
+# （--only / --skip-* 未指定時はコンポーネントを対話的に選択。非対話環境では全インストール）
 cd %USERPROFILE%\dotfiles
 setup.bat
 

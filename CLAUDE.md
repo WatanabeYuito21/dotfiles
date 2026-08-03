@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Linux / WSL
-./setup.sh                             # 全設定をセットアップ
+./setup.sh                             # 未指定時はコンポーネントを対話的に選択
 ./setup.sh --skip-wsl                  # WSL設定をスキップ
 ./setup.sh --skip-nvim --skip-tmux --skip-bash
 
@@ -37,6 +37,8 @@ setup.bat --skip-wsl
 ```
 
 `--only` と `--skip-*` は併用不可。Linux/WSL の対応コンポーネント: `nvim` `tmux` `bash` `wsl`。Windows の対応コンポーネント: `nvim` `wsl`。`--only nvim` は Lazy sync まで含めて実行される。
+
+`--only` / `--skip-*`（PowerShell は `-Only` / `-Skip*`）のいずれも指定しない場合、対話的にコンポーネントを選択するプロンプトが表示される（番号入力・`a`・空 Enter で全選択）。非対話環境（パイプ実行など）では従来通り全コンポーネントをインストールする。`--dry-run` は選択指定とはみなされないため、単独指定でもプロンプトが表示される。
 
 WSL設定を適用した後は WSL を再起動する必要がある（`wsl --shutdown`）。
 
