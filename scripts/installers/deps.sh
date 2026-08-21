@@ -19,5 +19,9 @@ check_dependencies() {
         command -v "$cmd" &>/dev/null || log_warn "$cmd が見つかりません（オプション）"
     done
 
+    # pwsh: PowerShell LSP (powershell_es) に必要。WSL では appendWindowsPath=false
+    # のため Windows 側の pwsh.exe は使えず、WSL 内にネイティブインストールが必要
+    command -v pwsh &>/dev/null || log_warn "pwsh が見つかりません（オプション、PowerShell LSP に必要。WSL の場合は appendWindowsPath=false のため Windows 側の pwsh は使えず、WSL 内にネイティブインストールが必要）"
+
     log_info "依存関係チェック完了"
 }
