@@ -33,6 +33,11 @@ show_recommendations() {
         || echo "  • uv をインストール: curl -LsSf https://astral.sh/uv/install.sh | sh"
     command -v node &>/dev/null \
         || echo "  • Node.js をインストール: nvm install --lts"
+    if ! command -v pwsh &>/dev/null; then
+        echo "  • pwsh をインストール（PowerShell LSP に必要。WSL では appendWindowsPath=false"
+        echo "    のため Windows 側の pwsh.exe は使えず、WSL 内にネイティブインストールが必要）:"
+        echo "    https://learn.microsoft.com/powershell/scripting/install/install-ubuntu"
+    fi
     echo ""
 
     if is_wsl && [[ -f "$HOME/.wsl/wsl.conf" ]]; then

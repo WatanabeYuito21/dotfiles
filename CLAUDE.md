@@ -118,6 +118,7 @@ nvim/lua/
 
 - `wsl/wsl.conf` は `~/.wsl/wsl.conf` にコピーされる。`/etc/wsl.conf` への反映は手動で `sudo cp ~/.wsl/wsl.conf /etc/wsl.conf` を実行する（root 所有ファイルのためシンボリックリンク不可）
 - systemd 有効化・Windows PATH 汚染防止（`appendWindowsPath=false`）・ロケール設定を含む
+- `appendWindowsPath=false` により Windows 側の実行ファイル（例: `pwsh.exe`）は WSL から見えない。PowerShell LSP (`powershell_es`) を使う場合は WSL 内にネイティブの `pwsh` を別途インストールする必要がある
 
 ### bash (`bash/bashrc`)
 
