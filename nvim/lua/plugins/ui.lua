@@ -10,6 +10,21 @@ return {
             options = {
                 theme = 'auto',
             },
+            sections = {
+                lualine_x = {
+                    {
+                        function()
+                            local enc = vim.bo.fileencoding ~= '' and vim.bo.fileencoding or vim.o.encoding
+                            if vim.bo.bomb then
+                                enc = enc .. ' [BOM]'
+                            end
+                            return enc
+                        end,
+                    },
+                    'fileformat',
+                    'filetype',
+                },
+            },
         },
     },
     {
