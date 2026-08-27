@@ -90,6 +90,7 @@ nvim/lua/
 ├── plugins/
 │   ├── init.lua         # lazy.nvim のブートストラップ・プラグイン一覧
 │   ├── ui.lua           # lualine, hlchunk, neo-tree
+│   ├── treesitter.lua   # nvim-treesitter（パーサー管理・シンタックスハイライト）
 │   ├── editor.lua       # Comment.nvim, treesj
 │   ├── file_management.lua
 │   ├── markdown.lua     # markdown-preview, memolist
@@ -108,7 +109,8 @@ nvim/lua/
 **新しい言語を追加する場合**:
 1. `nvim/lua/lsp/servers.lua` に `vim.lsp.config.<server> = { capabilities = capabilities }` を追加
 2. `nvim/lua/plugins/formatter.lua` の `formatters_by_ft` にフォーマッターを追加
-3. Mason（`:Mason`）またはシステムパッケージマネージャーでツールをインストール
+3. `nvim/lua/plugins/treesitter.lua` の `ensure_installed` に treesitter パーサー名を追加（未対応だと Comment.nvim 等 treesitter 依存機能が `[Comment.nvim] nil` のようなエラーになる）
+4. Mason（`:Mason`）またはシステムパッケージマネージャーでツールをインストール
 
 **プラグインを追加する場合**: `nvim/lua/plugins/init.lua` の lazy.nvim プラグインリストに追記し、設定が多い場合は対応する `*.lua` ファイル（`ui.lua`, `editor.lua` 等）に分割する。
 
