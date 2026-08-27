@@ -48,7 +48,8 @@ function M.setup(capabilities)
             capabilities = capabilities,
             settings = {
                 ["rust-analyzer"] = {
-                    checkOnSave = {
+                    checkOnSave = true,
+                    check = {
                         command = "clippy",
                     },
                     cargo = {
@@ -75,6 +76,7 @@ function M.setup(capabilities)
     if vim.fn.executable('pwsh') == 1 then
         vim.lsp.config.powershell_es = {
             capabilities = capabilities,
+            bundle_path = vim.fn.stdpath('data') .. '/mason/packages/powershell-editor-services',
         }
         table.insert(servers_to_enable, 'powershell_es')
     end
