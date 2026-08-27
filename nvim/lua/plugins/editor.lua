@@ -5,7 +5,7 @@ return {
     {
         -- コメントアウトを簡単にするプラグイン
         'numToStr/Comment.nvim',
-        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'JoosepAlviste/nvim-ts-context-commentstring' },
         opts = function()
             require('ts_context_commentstring').setup({ enable_autocmd = false })
             return {

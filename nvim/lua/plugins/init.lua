@@ -22,6 +22,7 @@ local function get_all_plugins()
 
     -- Load plugin configurations from the 'plugins' directory
     vim.list_extend(plugins, require('plugins.ui'))
+    vim.list_extend(plugins, require('plugins.treesitter'))
     vim.list_extend(plugins, require('plugins.editor'))
     vim.list_extend(plugins, require('plugins.file_management'))
     vim.list_extend(plugins, require('plugins.markdown'))
