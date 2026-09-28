@@ -1,23 +1,23 @@
 # WatanabeYuito's Dotfiles
 
-🚀 **現代的な開発環境設定** - WSL2/Linux対応、日本語サポート付き
+WSL2/Linux対応の開発環境設定。日本語環境対応。
 
-## ✨ 主な機能
+## 主な機能
 
-- **🐚 Shell**: 共有履歴機能付きBash設定
-- **🖥️ Terminal**: セッション永続化対応Tmux
-- **✏️ Editor**: LSP・自動補完・AI支援付きNeovim
-- **🤖 AI統合**: Claude Code (claudecode.nvim) によるNeovim内AI支援
-- **📝 メモ機能**: memolist.vim によるテキストメモ管理
-- **🏠 WSL2最適化**: Windows環境との完全統合
-- **🌍 多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
+- **Shell**: 共有履歴機能付きBash設定
+- **Terminal**: セッション永続化対応Tmux
+- **Editor**: LSP・自動補完付きNeovim
+- **AI統合**: Claude Code (claudecode.nvim) によるNeovim内AI操作
+- **メモ機能**: memolist.vim によるテキストメモ管理
+- **WSL2対応**: Windows環境との統合設定
+- **多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
 
-## 📁 構成
+## 構成
 
 ```
 dotfiles/
 ├── bash/
-│   ├── bashrc              # 強化されたBash設定
+│   ├── bashrc              # Bash設定
 │   └── local/              # ホスト固有設定（<hostname>.bashrc を配置）
 ├── tmux/
 │   └── tmux.conf           # プラグイン対応Tmux設定
@@ -55,7 +55,7 @@ dotfiles/
 └── setup.bat               # Windowsバッチセットアップスクリプト
 ```
 
-## 🎯 特徴的な設定
+## 設定内容
 
 ### Bash設定
 
@@ -65,7 +65,7 @@ dotfiles/
   - Python (pyenv)
   - Rust (cargo)
   - Node.js (nvm)
-- **日本語環境**: UTF-8ロケール完全対応
+- **日本語環境**: UTF-8ロケール対応
 - **便利なエイリアス**: WSL設定適用コマンドなど
 - **ホスト固有設定**: `bash/local/<hostname>.bashrc` を配置するとその端末だけで自動読み込み（ファイルがなければスキップ）
 
@@ -74,8 +74,8 @@ dotfiles/
 - **プレフィックスキー**: `Ctrl+j` (デフォルトの`Ctrl+b`から変更)
 - **Vimスタイルナビゲーション**: `hjkl`でペイン移動、`HJKL`でリサイズ
 - **セッション永続化**: 自動保存・復元 (tmux-resurrect/continuum)
-- **モダンUI**: カスタムステータスバー
-- **マウス対応**: フル統合マウスサポート
+- **ステータスバー**: カスタムテーマ
+- **マウス対応**
 - **プラグイン管理**: TPM (Tmux Plugin Manager)
 
 ### Neovim設定
@@ -86,14 +86,14 @@ dotfiles/
 
 #### UI・表示
 
-- **lualine.nvim**: モダンなステータスライン (autoテーマ)
+- **lualine.nvim**: ステータスライン (autoテーマ)
 - **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
 - **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
 - **molokai**: カラースキーム
 
 #### エディタ機能
 
-- **Comment.nvim**: 高速コメント切り替え
+- **Comment.nvim**: コメント切り替え
 - **treesj**: 構造的な分割・結合機能
 - **markdown-preview.nvim**: Markdownプレビュー機能
 - **memolist.vim**: テキストメモ管理システム
@@ -103,9 +103,9 @@ dotfiles/
 
 #### LSP・補完
 
-- **nvim-lspconfig**: 多言語LSP対応（最新のvim.lsp.config APIを使用）
+- **nvim-lspconfig**: 多言語LSP対応（vim.lsp.config APIを使用）
 - **mason.nvim**: LSPサーバー自動管理
-- **nvim-cmp**: 強力な自動補完エンジン
+- **nvim-cmp**: 自動補完エンジン
   - LSP補完
   - バッファ補完
   - パス補完
@@ -139,7 +139,7 @@ dotfiles/
 | PowerShell            | PowerShell ES | prettier       |
 | Markdown              | marksman      | prettier       |
 
-## 🔧 インストール
+## インストール
 
 ### Linux/macOS/WSL環境
 
@@ -231,7 +231,7 @@ setup.bat --help                       # ヘルプ表示
 
 **注意**: Windowsでシンボリックリンクを作成するには管理者権限が必要です。対応コンポーネント: `nvim` `wsl`
 
-## ⌨️ キーバインド
+## キーバインド
 
 ### Tmux
 
@@ -297,15 +297,15 @@ setup.bat --help                       # ヘルプ表示
 | `<Leader>ml` | メモ一覧表示 |
 | `<Leader>mg` | メモ検索     |
 
-## 🌐 WSL2特化機能
+## WSL2関連の設定
 
-- **Systemd対応**: より良いサービス管理
-- **WindowsパスFromのワーディング**: Windows PATH汚染防止 (`appendWindowsPath=false`)
-- **ディスプレイ設定**: 自動X11フォワーディング・WSL2ネイティブGUI対応
-- **日本語ロケール**: 完全UTF-8日本語対応 (`ja_JP.UTF-8`)
-- **Interop修正**: 自動WSL interop修復機能
+- **Systemd対応**
+- **Windows PATH汚染防止**: `appendWindowsPath=false`
+- **ディスプレイ設定**: X11フォワーディング・WSL2ネイティブGUI対応
+- **日本語ロケール**: `ja_JP.UTF-8`
+- **Interop修正**: WSL interop修復機能
 
-## 🤖 AI機能の使い方
+## AI機能の使い方
 
 ### Claude Code (claudecode.nvim)
 
@@ -329,7 +329,7 @@ Neovim内からClaude Codeを操作できます。
 - `<Leader>aa`: Claude Codeの提案するdiffを受け入れ
 - `<Leader>ad`: Claude Codeの提案するdiffを拒否
 
-## 📝 メモ機能
+## メモ機能
 
 memolist.vimによるテキストメモ管理機能を搭載しています。
 
@@ -352,7 +352,7 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 <Leader>mg または :MemoGrep
 ```
 
-## 🛠️ カスタマイズ
+## カスタマイズ
 
 ### 新しい言語の追加
 
@@ -405,7 +405,7 @@ alias proj='cd ~/projects/myproject'
 全体の `bashrc` が読み込まれた後に自動 source される。ファイルがない端末ではスキップされる。
 リポジトリで管理したくない場合は `.gitignore` に `bash/local/*.bashrc` を追加する。
 
-## 🔄 更新
+## 更新
 
 設定を更新するには：
 
@@ -420,7 +420,7 @@ git pull
 - **Tmux**: `Prefix + U`
 - **Neovim**: `:Lazy update`
 
-## 🚨 トラブルシューティング
+## トラブルシューティング
 
 ### セットアップスクリプト関連
 
@@ -502,7 +502,7 @@ source ~/.bashrc
 :Lazy install
 ```
 
-## 📋 要件
+## 要件
 
 - **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
 - **Neovim**: 0.11.0以上（最新版推奨）
@@ -514,19 +514,16 @@ source ~/.bashrc
   - cargo (Rust開発用)
   - go (Go言語開発用)
 
-## 📝 備考
+## 備考
 
 - 全設定に日本語サポートが含まれています
-- 開発ワークフローに最適化されています
 - ローカル・リモート開発両方に対応
 - VS Code ターミナル統合と互換性があります
-- メモ機能でアイデアやTODOを素早く記録できます
-- AI機能（Claude Code）で開発効率が大幅に向上します
 
-## 🤝 貢献
+## 貢献
 
-フォークして独自のニーズに合わせてカスタマイズしてください。改善のためのプルリクエストも歓迎します！
+フォークして独自のニーズに合わせてカスタマイズしてください。改善のためのプルリクエストも歓迎します。
 
-## 📄 ライセンス
+## ライセンス
 
-MIT License - 自由に使用・改変してください。
+MIT License
