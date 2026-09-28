@@ -29,6 +29,7 @@ dotfiles/
 │   │   ├── plugins/        # プラグイン設定（モジュール分割）
 │   │   │   ├── init.lua    # lazy.nvimプラグイン管理
 │   │   │   ├── ui.lua      # UI関連プラグイン
+│   │   │   ├── treesitter.lua # nvim-treesitter（パーサー管理・シンタックスハイライト）
 │   │   │   ├── editor.lua  # エディタ機能プラグイン
 │   │   │   ├── file_management.lua # ファイル管理プラグイン
 │   │   │   ├── markdown.lua # Markdown関連プラグイン
@@ -86,10 +87,16 @@ dotfiles/
 
 #### UI・表示
 
-- **lualine.nvim**: ステータスライン (autoテーマ)
+- **lualine.nvim**: ステータスライン (autoテーマ、BOM有無を表示)
 - **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
 - **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
 - **molokai**: カラースキーム
+
+#### シンタックスハイライト
+
+- **nvim-treesitter**: パーサーベースのシンタックスハイライト・インデント
+  - 対応言語: Lua, Python, JavaScript/TypeScript/TSX, Rust, Go, Markdown, PowerShell 等
+  - Comment.nvim（`ts_context_commentstring`）などtreesitter依存プラグインの前提
 
 #### エディタ機能
 
@@ -466,6 +473,15 @@ source ~/.bashrc
    ```cmd
    wsl --shutdown
    ```
+
+#### PowerShell LSP (powershell_es) が起動しない
+
+`appendWindowsPath=false` によりWindows側の `pwsh.exe` はWSLから見えないため、WSL内にネイティブの `pwsh` を別途インストールする必要があります（`setup.sh` 実行時に未検出であれば案内が表示されます）。
+
+```bash
+# インストール手順（Ubuntu の例）
+# https://learn.microsoft.com/powershell/scripting/install/install-ubuntu
+```
 
 ### Neovim関連
 
