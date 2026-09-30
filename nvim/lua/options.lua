@@ -10,7 +10,6 @@ else
     -- fallback to system python
     vim.g.python3_host_prog = vim.fn.exepath("python3")
 end
--- vim.g.python3_host_prog = "/.pyenv/bin/pyenv"
 
 -- 行番号表示
 opt.number = true
@@ -29,9 +28,8 @@ opt.autoindent = true
 opt.smartindent = true
 
 -- encoding設定
-opt.encoding = 'utf-8'
 opt.fileencoding = 'utf-8'
-opt.fileencodings = { 'ucs-boms', 'utf-8', 'enc-jp', 'cp932' }
+opt.fileencodings = { 'ucs-boms', 'utf-8', 'euc-jp', 'cp932' }
 opt.fileformats = { 'dos', 'unix', 'mac' }
 
 -- 制御文字表示設定
@@ -78,9 +76,6 @@ opt.swapfile = false
 -- Backupfile 出力無効化
 -- cmd('set nobackup')
 opt.backup = false
-
--- シンタックスハイライト有効化
-cmd('syntax on')
 
 -- カラースキーム設定
 -- cmd('colorscheme spring-night')
