@@ -24,7 +24,7 @@ return {
                 -- Automatically format on save
                 format_on_save = {
                     timeout_ms = 500,
-                    lsp_fallback = true,
+                    lsp_format = 'fallback',
                 },
 
                 -- Custom formatter settings
@@ -48,7 +48,7 @@ return {
                         ['end'] = { args.line2, end_line:len() },
                     }
                 end
-                conform.format({ async = true, lsp_fallback = true, range = range })
+                conform.format({ async = true, lsp_format = 'fallback', range = range })
             end, {range = true})
         end,
     },

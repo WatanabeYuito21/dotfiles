@@ -23,13 +23,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         -- 診断機能
         vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-        vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+        vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end, opts)
+        vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
 
         -- フォーマット(conform.nvim を優先、フォールバックでLSP)
         vim.keymap.set('n', '<space>f', function()
             if conform_ok then
-                conform.format({ async = true, lsp_fallback = true})
+                conform.format({ async = true, lsp_format = 'fallback' })
             else
                 vim.lsp.buf.format({ async = true })
             end
