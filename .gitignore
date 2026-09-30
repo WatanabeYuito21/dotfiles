@@ -1,7 +1,6 @@
 # Neovim
 .netrwhist
 *.luac
-nvim/pack/
 
 # ログ・一時ファイル
 *.log

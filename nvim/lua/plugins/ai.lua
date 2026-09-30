@@ -1,6 +1,12 @@
 -- dotfiles/nvim/plugins/ai.lua
 
 return {
+    -- GitHub Copilot
+    {
+        "github/copilot.vim",
+        event = "InsertEnter",
+        cmd = "Copilot",
+    },
     -- Claude Code
     {
         "coder/claudecode.nvim",
