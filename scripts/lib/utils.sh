@@ -30,8 +30,11 @@ setup_config() {
 
     run_cmd mkdir -p "$(dirname "$dst")"
 
-    [[ -L "$dst" ]] && run_cmd rm "$dst"
-    [[ -d "$dst" ]] && backup_if_exists "$dst"
+    if [[ -L "$dst" ]]; then
+        run_cmd rm "$dst"
+    elif [[ -d "$dst" ]]; then
+        backup_if_exists "$dst"
+    fi
 
     run_cmd ln -sf "$src" "$dst"
     log_info "$name: リンク作成 $dst -> $src"
@@ -46,8 +49,11 @@ setup_home_config() {
         return 0
     fi
 
-    [[ -L "$dst" ]] && run_cmd rm "$dst"
-    [[ -f "$dst" ]] && backup_if_exists "$dst"
+    if [[ -L "$dst" ]]; then
+        run_cmd rm "$dst"
+    elif [[ -f "$dst" ]]; then
+        backup_if_exists "$dst"
+    fi
 
     run_cmd ln -sf "$src" "$dst"
     log_info "$name: リンク作成 $dst -> $src"
