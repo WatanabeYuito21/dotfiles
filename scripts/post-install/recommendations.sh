@@ -7,9 +7,9 @@ show_recommendations() {
 
     if [[ -d "$DOTFILES_DIR/nvim" ]]; then
         echo "【Neovim】"
-        echo "  • LSP サーバーをインストール: :Mason"
-        echo "  • 推奨 LSP: lua-language-server, pyright, typescript-language-server,"
-        echo "              rust-analyzer, gopls, marksman"
+        echo "  • 初回の通常起動時に Mason が LSP サーバーを自動インストールします（状況は :Mason で確認）"
+        echo "  • 次のツールが無いと該当サーバーは自動インストールの対象外です:"
+        echo "    npm (pyright, ts_ls) / go (gopls) / pwsh (powershell_es)"
         echo ""
     fi
 
@@ -43,7 +43,11 @@ show_recommendations() {
     if is_wsl && [[ -f "$HOME/.wsl/wsl.conf" ]]; then
         echo "【WSL】"
         echo "  • 設定を適用するには以下を実行してください:"
-        echo "    sudo cp ~/.wsl/wsl.conf /etc/wsl.conf"
+        if [[ -x "$HOME/.wsl/apply-wsl-config.sh" ]]; then
+            echo "    sudo ~/.wsl/apply-wsl-config.sh （新しいシェルでは apply-wsl-config でも可）"
+        else
+            echo "    sudo cp ~/.wsl/wsl.conf /etc/wsl.conf"
+        fi
         echo "    （PowerShell で） wsl --shutdown"
         echo ""
     fi
