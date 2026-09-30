@@ -10,6 +10,12 @@ return {
         end,
     },
     {
+        -- Neovim Lua API の型定義を lua_ls に必要な時だけ読み込ませる
+        'folke/lazydev.nvim',
+        ft = 'lua',
+        opts = {},
+    },
+    {
         -- スニペットエンジン
         'L3MON4D3/LuaSnip',
         build = 'make install_jsregexp',
