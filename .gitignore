@@ -1,5 +1,4 @@
 # Neovim
-lazy-lock.json
 .netrwhist
 *.luac
 nvim/pack/
