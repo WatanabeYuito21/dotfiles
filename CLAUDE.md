@@ -102,8 +102,6 @@ nvim/lua/
     ├── servers.lua      # 言語別サーバー設定（vim.lsp.config API）
     ├── handlers.lua     # diagnostics 表示・キーバインド設定
     └── capabilities.lua # nvim-cmp との連携
-└── utils/
-    └── init.lua         # 汎用ユーティリティ（拡張用プレースホルダー）
 ```
 
 **新しい言語を追加する場合**:

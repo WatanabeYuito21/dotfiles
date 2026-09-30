@@ -36,12 +36,11 @@ dotfiles/
 │   │   │   ├── formatter.lua # コードフォーマット設定
 │   │   │   ├── lsp.lua     # LSPプラグイン設定
 │   │   │   └── ai.lua      # AI関連プラグイン
-│   │   ├── lsp/            # LSP設定（モジュール分割）
-│   │   │   ├── init.lua    # LSPエントリーポイント
-│   │   │   ├── servers.lua # サーバー設定
-│   │   │   ├── handlers.lua # ハンドラー設定
-│   │   │   └── capabilities.lua # 機能設定
-│   │   └── utils/          # ユーティリティ
+│   │   └── lsp/            # LSP設定（モジュール分割）
+│   │       ├── init.lua    # LSPエントリーポイント
+│   │       ├── servers.lua # サーバー設定
+│   │       ├── handlers.lua # ハンドラー設定
+│   │       └── capabilities.lua # 機能設定
 │   ├── colors/molokai.vim  # カラースキーム
 │   └── templates/          # テンプレートファイル
 │       └── md.txt          # メモテンプレート（suffix=md 用）
