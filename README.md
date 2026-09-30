@@ -17,12 +17,22 @@ WSL2/Linux対応の開発環境設定。日本語環境対応。
 ```
 dotfiles/
 ├── bash/
-│   ├── bashrc              # Bash設定
+│   ├── bashrc              # Bash設定（標準設定・履歴共有・LANG）
+│   ├── conf.d/             # 機能別設定（番号順に読み込み）
+│   │   ├── 10-wsl.sh       # WSL2・DISPLAY・apply-wsl-config エイリアス
+│   │   ├── 20-pyenv.sh     # pyenv
+│   │   ├── 30-cargo.sh     # Rust (cargo)
+│   │   ├── 40-nvm.sh       # Node.js (nvm)
+│   │   ├── 50-uv.sh        # uv・~/.local/bin・パッケージ公開直後の除外設定
+│   │   ├── 60-ime.sh       # 入力メソッド (IBus)
+│   │   ├── 70-shogun.sh    # multi-agent-shogun 用関数
+│   │   └── 80-smart-run.sh # smart-run（履歴検索）
 │   └── local/              # ホスト固有設定（<hostname>.bashrc を配置）
 ├── tmux/
 │   └── tmux.conf           # プラグイン対応Tmux設定
 ├── nvim/
 │   ├── init.lua            # Neovim エントリーポイント
+│   ├── lazy-lock.json      # プラグインのバージョン固定（コミット対象）
 │   ├── lua/
 │   │   ├── options.lua     # エディタオプション
 │   │   ├── keymaps.lua     # キーマッピング
@@ -45,7 +55,8 @@ dotfiles/
 │   └── templates/          # テンプレートファイル
 │       └── md.txt          # メモテンプレート（suffix=md 用）
 ├── wsl/
-│   └── wsl.conf            # WSL設定
+│   ├── wsl.conf            # WSL設定
+│   └── apply-wsl-config.sh # /etc/wsl.conf への反映スクリプト
 ├── scripts/
 │   ├── installers/         # インストーラスクリプト群
 │   ├── lib/                # ユーティリティライブラリ
@@ -59,14 +70,15 @@ dotfiles/
 
 ### Bash設定
 
-- **共有履歴**: 全ターミナル間でリアルタイムコマンド履歴共有
+- **共有履歴**: 全ターミナル間でリアルタイムコマンド履歴共有（履歴サイズ: メモリ100,000件・ファイル200,000件）
+- **機能別に分割**: `bash/conf.d/*.sh` を番号順に読み込み
 - **WSL2統合**: 自動interop修正・ディスプレイ設定
 - **開発ツール統合**:
   - Python (pyenv)
   - Rust (cargo)
   - Node.js (nvm)
-- **日本語環境**: UTF-8ロケール対応
-- **便利なエイリアス**: WSL設定適用コマンドなど
+- **日本語環境**: UTF-8ロケール対応（`LANG=ja_JP.UTF-8`）
+- **便利なエイリアス**: WSL設定適用コマンド（`~/.wsl/apply-wsl-config.sh` がある場合のみ）など
 - **ホスト固有設定**: `bash/local/<hostname>.bashrc` を配置するとその端末だけで自動読み込み（ファイルがなければスキップ）
 
 ### Tmux設定
@@ -110,7 +122,11 @@ dotfiles/
 #### LSP・補完
 
 - **nvim-lspconfig**: 多言語LSP対応（vim.lsp.config APIを使用）
-- **mason.nvim**: LSPサーバー自動管理
+- **mason.nvim / mason-lspconfig.nvim**: LSPサーバー自動管理
+  - 起動時に `ensure_installed` のサーバーを自動インストール（`npm` / `go` / `pwsh` がない環境ではそのサーバーを対象外にする）
+  - サーバーの有効化は `nvim/lua/lsp/servers.lua` に一本化（Mason の自動有効化は無効）
+  - `ensure_installed` は headless 起動では実行されないため、`setup.sh` では入らず初回の通常起動時にインストールされる
+- **lazydev.nvim**: Lua ファイルで lua_ls に Neovim API の型定義を必要なときだけ読み込ませる
 - **nvim-cmp**: 自動補完エンジン
   - LSP補完
   - バッファ補完
@@ -132,6 +148,8 @@ dotfiles/
   - バッファ追加・選択範囲送信
   - インラインdiff受け入れ・拒否
   - 依存プラグイン: folke/snacks.nvim
+- **copilot.vim**: GitHub Copilot（lazy.nvim 管理。`InsertEnter` / `:Copilot` で遅延ロード）
+  - 初回は `:Copilot setup` で認証
 
 ### 対応言語・ツール
 
@@ -179,7 +197,7 @@ nvim
 
 ### WSL設定の適用
 
-WSLの場合、追加セットアップが必要です：
+WSLの場合、追加セットアップが必要です（`apply-wsl-config.sh` は `./setup.sh` の wsl コンポーネントが `~/.wsl/` に配置します）：
 
 ```bash
 # エイリアスを使用（推奨）
@@ -391,7 +409,8 @@ memolist.vimによるテキストメモ管理機能を搭載しています。
 
 ### Bashカスタマイズ
 
-- `bash/bashrc`にエイリアスや関数を追加
+- 機能単位の設定は `bash/conf.d/NN-name.sh` として追加（番号順に読み込まれる）
+- 標準的なエイリアスや関数は `bash/bashrc` に追加
 - `~/.bash_aliases`で追加エイリアスを作成
 - 必要に応じて環境変数を変更
 
@@ -425,6 +444,8 @@ git pull
 
 - **Tmux**: `Prefix + U`
 - **Neovim**: `:Lazy update`
+  - バージョンは `nvim/lazy-lock.json` で固定されている。更新後はロックファイルの差分をコミットする
+  - 他のマシンでロックファイルのバージョンに揃えるには `:Lazy restore`
 
 ## トラブルシューティング
 
@@ -458,6 +479,13 @@ find scripts/ -name "*.sh" -type f -exec chmod +x {} \;
 source ~/.bashrc
 
 # または新しいターミナルを開く
+```
+
+それでも見つからない場合は `~/.wsl/apply-wsl-config.sh` がない可能性がある（エイリアスはこのファイルがある場合のみ定義される）。
+WSL 設定を再配置する：
+
+```bash
+./setup.sh --only wsl
 ```
 
 #### WSL設定が適用されない

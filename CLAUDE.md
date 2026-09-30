@@ -77,6 +77,7 @@ scripts/
 - `setup_home_config` はホームディレクトリへのファイルリンク用
 - state を変更するシェル操作（`rm` / `mkdir` / `ln` / `mv` / `cp` / `git clone` / `nvim --headless`）は `run_cmd` 経由で呼ぶこと。`DRY_RUN=true` 時は実行せずログ出力に切り替わる
 - 非致命的なステップ（オプション依存、WSL設定など）は失敗しても `return 0` で続行する
+- `setup_lazy` の `nvim --headless "+Lazy! sync"` は出力を一時ログに保存し、失敗時のみログのパスと末尾10行を表示する（dry-run 時はコマンド表示のみ）
 - `.bashrc` はシンボリックリンクのため、スクリプトから直接追記しない（リポジトリ本体が書き換わる）
 
 ### Neovim 設定 (`nvim/`)
@@ -95,8 +96,8 @@ nvim/lua/
 │   ├── file_management.lua
 │   ├── markdown.lua     # markdown-preview, memolist
 │   ├── formatter.lua    # conform.nvim（保存時自動フォーマット）
-│   ├── lsp.lua          # mason, nvim-cmp, LuaSnip
-│   └── ai.lua           # claudecode.nvim
+│   ├── lsp.lua          # mason, mason-lspconfig（ensure_installed）, lazydev, nvim-cmp, LuaSnip
+│   └── ai.lua           # claudecode.nvim, copilot.vim
 └── lsp/
     ├── init.lua         # LSP 全体の初期化
     ├── servers.lua      # 言語別サーバー設定（vim.lsp.config API）
@@ -108,7 +109,11 @@ nvim/lua/
 1. `nvim/lua/lsp/servers.lua` に `vim.lsp.config.<server> = { capabilities = capabilities }` を追加
 2. `nvim/lua/plugins/formatter.lua` の `formatters_by_ft` にフォーマッターを追加
 3. `nvim/lua/plugins/treesitter.lua` の `ensure_installed` に treesitter パーサー名を追加（未対応だと Comment.nvim 等 treesitter 依存機能が `[Comment.nvim] nil` のようなエラーになる）
-4. Mason（`:Mason`）またはシステムパッケージマネージャーでツールをインストール
+4. Mason を使う場合は `nvim/lua/plugins/lsp.lua` の mason-lspconfig `ensure_installed` に lspconfig 名を追加する（自動有効化は `automatic_enable = false` のため、有効化は手順1の `servers.lua` のみで行われる）。システムパッケージマネージャーで入れる場合は `:Mason` または各パッケージマネージャーでインストール
+
+- `nvim/lazy-lock.json` はコミット対象（プラグイン版の固定）。`:Lazy update` 後は差分をコミットし、他マシンでは `:Lazy restore` で揃える
+- mason-lspconfig の `ensure_installed` は headless 起動では実行されない。`setup.sh` の Lazy sync では LSP サーバーは入らず、初回の通常起動時にインストールされる
+- `nvim/lua/lsp/*.lua`・`nvim/lua/plugins/{editor,file_management,formatter,init,lsp,markdown,ui}.lua`は CRLF 改行。スクリプトで編集するときは改行を LF に変換しないこと（全行が差分になる）
 
 **プラグインを追加する場合**: `nvim/lua/plugins/init.lua` の lazy.nvim プラグインリストに追記し、設定が多い場合は対応する `*.lua` ファイル（`ui.lua`, `editor.lua` 等）に分割する。
 
@@ -118,6 +123,7 @@ nvim/lua/
 
 - `wsl/wsl.conf` は `~/.wsl/wsl.conf` にコピーされる。`/etc/wsl.conf` への反映は手動で `sudo cp ~/.wsl/wsl.conf /etc/wsl.conf` を実行する（root 所有ファイルのためシンボリックリンク不可）
 - systemd 有効化・Windows PATH 汚染防止（`appendWindowsPath=false`）・ロケール設定を含む
+- `wsl/apply-wsl-config.sh` も `~/.wsl/apply-wsl-config.sh` にコピーされ（実行権限付き）、`sudo` で実行すると `/etc/wsl.conf` をバックアップしたうえで配置する。bash 側のエイリアス `apply-wsl-config` から呼べる
 - `appendWindowsPath=false` により Windows 側の実行ファイル（例: `pwsh.exe`）は WSL から見えない。PowerShell LSP (`powershell_es`) を使う場合は WSL 内にネイティブの `pwsh` を別途インストールする必要がある
 
 ### bash (`bash/bashrc`)
