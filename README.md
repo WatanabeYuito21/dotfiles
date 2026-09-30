@@ -51,7 +51,7 @@ dotfiles/
 │   │       ├── servers.lua # サーバー設定
 │   │       ├── handlers.lua # ハンドラー設定
 │   │       └── capabilities.lua # 機能設定
-│   ├── colors/molokai.vim  # カラースキーム
+│   ├── colors/             # カラースキーム（gruvbox / molokai / spring-night）
 │   └── templates/          # テンプレートファイル
 │       └── md.txt          # メモテンプレート（suffix=md 用）
 ├── wsl/
@@ -101,7 +101,7 @@ dotfiles/
 - **lualine.nvim**: ステータスライン (autoテーマ、BOM有無を表示)
 - **hlchunk.nvim**: インデントガイド・行番号ハイライト表示
 - **neo-tree.nvim**: ツリー形式ファイルエクスプローラー
-- **molokai**: カラースキーム
+- **gruvbox**: カラースキーム（`options.lua` で設定。`colors/` に molokai・spring-night も同梱）
 
 #### シンタックスハイライト
 
