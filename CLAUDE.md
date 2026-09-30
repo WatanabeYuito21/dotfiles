@@ -79,6 +79,7 @@ scripts/
 - 非致命的なステップ（オプション依存、WSL設定など）は失敗しても `return 0` で続行する
 - `setup_lazy` の `nvim --headless "+Lazy! sync"` は出力を一時ログに保存し、失敗時のみログのパスと末尾10行を表示する（dry-run 時はコマンド表示のみ）
 - `.bashrc` はシンボリックリンクのため、スクリプトから直接追記しない（リポジトリ本体が書き換わる）
+- CI（`.github/workflows/ci.yml`）で shellcheck（`scripts/`・`setup.sh`・`wsl/apply-wsl-config.sh` は style レベル、`bash/` は warning レベルで SC1090/SC2155 を除外）と `./setup.sh --dry-run` を実行する。手元では `uvx --from shellcheck-py shellcheck -x -P SCRIPTDIR -S style <files>` で確認できる
 
 ### Neovim 設定 (`nvim/`)
 
