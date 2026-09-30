@@ -124,10 +124,11 @@ nvim/lua/
 
 ### bash (`bash/bashrc`)
 
-- pyenv・cargo・nvm・uv の PATH 設定と初期化が含まれている
-- 複数ターミナル間での履歴共有（`PROMPT_COMMAND='share_history'`）
-- WSL2 用の DISPLAY・LANG・interop 設定
+- `bash/bashrc` 本体は Ubuntu 標準設定・履歴共有（`PROMPT_COMMAND='share_history'`）・LANG 設定のみ。残りは `bash/conf.d/*.sh` に分割されており、番号順に source される（WSL/DISPLAY・pyenv・cargo・nvm・uv・IBus・shogun・smart-run）
+- 読み込み元の解決は `readlink -f "${BASH_SOURCE[0]}"`（`~/.bashrc` はシンボリックリンクのため）。新しい設定は `conf.d/` に `NN-name.sh` として追加する
+- `bash/local/<hostname -s>.bashrc` が最後に source される（ホスト固有設定）
 - `~/.bashrc_im` を source している（IBus 入力メソッド設定、リポジトリ管理外）
+- `~/.wsl/apply-wsl-config.sh`（`wsl/` から配置）が存在する場合のみ `apply-wsl-config` エイリアスが定義される
 
 ### tmux (`tmux/tmux.conf`)
 
