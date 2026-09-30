@@ -13,6 +13,17 @@ setup_lazy() {
     fi
 
     log_info "Lazy.nvim プラグインを同期中..."
-    run_cmd nvim --headless "+Lazy! sync" +qa 2>/dev/null \
-        || log_warn "Lazy sync に失敗しました。起動後に :Lazy sync を実行してください"
+    if [[ "$DRY_RUN" == "true" ]]; then
+        run_cmd nvim --headless "+Lazy! sync" +qa
+        return 0
+    fi
+
+    local log_file
+    log_file="$(mktemp "${TMPDIR:-/tmp}/lazy-sync.XXXXXX.log")"
+    if nvim --headless "+Lazy! sync" +qa >"$log_file" 2>&1; then
+        rm -f "$log_file"
+    else
+        log_warn "Lazy sync に失敗しました。起動後に :Lazy sync を実行してください（ログ: $log_file）"
+        tail -n 10 "$log_file" >&2 || true
+    fi
 }
