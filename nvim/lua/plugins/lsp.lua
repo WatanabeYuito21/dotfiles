@@ -75,7 +75,19 @@ return {
         'williamboman/mason-lspconfig.nvim',
         dependencies = { 'williamboman/mason.nvim' },
         config = function()
-            require('mason-lspconfig').setup()
+            -- servers.lua と同じサーバーを自動インストールする。
+            -- 必要なツールチェーンがない環境ではエラー通知を避けるため対象から外す。
+            local function has(cmd) return vim.fn.executable(cmd) == 1 end
+            local ensure_installed = { 'lua_ls', 'rust_analyzer', 'marksman' }
+            if has('npm') then vim.list_extend(ensure_installed, { 'pyright', 'ts_ls' }) end
+            if has('go') then table.insert(ensure_installed, 'gopls') end
+            if has('pwsh') then table.insert(ensure_installed, 'powershell_es') end
+
+            require('mason-lspconfig').setup({
+                ensure_installed = ensure_installed,
+                -- サーバーの有効化は lsp/servers.lua に一本化する
+                automatic_enable = false,
+            })
         end,
     },
 
