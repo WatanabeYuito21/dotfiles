@@ -179,8 +179,8 @@ function share_history {
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}share_history"
 shopt -u histappend
 
-# WSL設定適用エイリアス（dotfilesセットアップで自動追加）
-alias apply-wsl-config='sudo "/home/watanabeyuito/.wsl/apply-wsl-config.sh"'
+# WSL設定適用エイリアス（setup.sh の wsl コンポーネントが ~/.wsl/ に配置する）
+[ -x "$HOME/.wsl/apply-wsl-config.sh" ] && alias apply-wsl-config='sudo "$HOME/.wsl/apply-wsl-config.sh"'
 
 # =====================================
 # X11/DISPLAY設定（環境別対応）
