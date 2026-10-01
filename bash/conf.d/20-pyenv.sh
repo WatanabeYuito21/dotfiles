@@ -1,6 +1,6 @@
 # Python環境設定（pyenv for Linux）
 
-# pyenv設定（WSL2/Linux用）
+# pyenv設定（WSL/Linux用）
 if [ -d "$HOME/.pyenv" ] && command -v pyenv &>/dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"

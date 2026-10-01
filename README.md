@@ -1,6 +1,6 @@
 # WatanabeYuito's Dotfiles
 
-WSL2/Linux対応の開発環境設定。日本語環境対応。
+WSL2/WSL3/Linux対応の開発環境設定。日本語環境対応。
 
 ## 主な機能
 
@@ -9,7 +9,7 @@ WSL2/Linux対応の開発環境設定。日本語環境対応。
 - **Editor**: LSP・自動補完付きNeovim
 - **AI統合**: Claude Code (claudecode.nvim) によるNeovim内AI操作
 - **メモ機能**: memolist.vim によるテキストメモ管理
-- **WSL2対応**: Windows環境との統合設定
+- **WSL2/WSL3対応**: Windows環境との統合設定
 - **多言語対応**: Python, Rust, TypeScript, Go, Lua, PowerShell
 
 ## 構成
@@ -19,7 +19,7 @@ dotfiles/
 ├── bash/
 │   ├── bashrc              # Bash設定（標準設定・履歴共有・LANG）
 │   ├── conf.d/             # 機能別設定（番号順に読み込み）
-│   │   ├── 10-wsl.sh       # WSL2・DISPLAY・apply-wsl-config エイリアス
+│   │   ├── 10-wsl.sh       # WSL・DISPLAY・apply-wsl-config エイリアス
 │   │   ├── 20-pyenv.sh     # pyenv
 │   │   ├── 30-cargo.sh     # Rust (cargo)
 │   │   ├── 40-nvm.sh       # Node.js (nvm)
@@ -72,7 +72,7 @@ dotfiles/
 
 - **共有履歴**: 全ターミナル間でリアルタイムコマンド履歴共有（履歴サイズ: メモリ100,000件・ファイル200,000件）
 - **機能別に分割**: `bash/conf.d/*.sh` を番号順に読み込み
-- **WSL2統合**: 自動interop修正・ディスプレイ設定
+- **WSL統合**: 自動interop修正・ディスプレイ設定
 - **開発ツール統合**:
   - Python (pyenv)
   - Rust (cargo)
@@ -321,11 +321,11 @@ setup.bat --help                       # ヘルプ表示
 | `<Leader>ml` | メモ一覧表示 |
 | `<Leader>mg` | メモ検索     |
 
-## WSL2関連の設定
+## WSL関連の設定
 
 - **Systemd対応**
 - **Windows PATH汚染防止**: `appendWindowsPath=false`
-- **ディスプレイ設定**: X11フォワーディング・WSL2ネイティブGUI対応
+- **ディスプレイ設定**: X11フォワーディング・WSLg(ネイティブGUI)対応
 - **日本語ロケール**: `ja_JP.UTF-8`
 - **Interop修正**: WSL interop修復機能
 
@@ -547,7 +547,7 @@ WSL 設定を再配置する：
 
 ## 要件
 
-- **OS**: WSL2, Ubuntu 20.04+, またはその他のDebian系Linux
+- **OS**: WSL2/WSL3, Ubuntu 20.04+, またはその他のDebian系Linux
 - **Neovim**: 0.11.0以上（最新版推奨）
 - **ツール**: git, curl, wget
 - **Node.js**: 18.0.0以上（markdown-preview.nvim用）
