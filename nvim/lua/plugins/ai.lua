@@ -22,7 +22,8 @@ return {
                     },
                     keys = {
                         -- terminal モードから抜けてそのまま <C-w> のウィンドウ操作に入る
-                        win_nav = { "<C-w>", [[<C-\><C-n><C-w>]], mode = "t", desc = "Window command" },
+                        -- snacks は文字列の rhs をアクション名として解決し、未定義なら文字列を返すだけなので expr が必要
+                        win_nav = { "<C-w>", [[<C-\><C-n><C-w>]], mode = "t", expr = true, desc = "Window command" },
                     },
                 },
             },

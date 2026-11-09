@@ -118,6 +118,8 @@ nvim/lua/
 
 **プラグインを追加する場合**: `nvim/lua/plugins/init.lua` の lazy.nvim プラグインリストに追記し、設定が多い場合は対応する `*.lua` ファイル（`ui.lua`, `editor.lua` 等）に分割する。
 
+**Claude Code (claudecode.nvim)**: `nvim/lua/plugins/ai.lua` で設定し、ターミナルは snacks.nvim のウィンドウで開く。snacks の既定の `winhighlight` は `NormalFloat`（gruvbox では背景色あり）を使うため、`snacks_win_opts.wo.winhighlight` で `Normal`/`NormalNC` に差し替えて透過させている。`snacks_win_opts.keys` の文字列 rhs は snacks のアクション名として解決され、未定義なら文字列を返すだけなので、キー列として実行したい場合は `expr = true` が必要（端末モードの `<C-w>` → `<C-\><C-n><C-w>` がこれ）。
+
 **GitHub Copilot**: `github/copilot.vim` は `nvim/lua/plugins/ai.lua` の lazy.nvim 管理（`InsertEnter` / `:Copilot` で遅延ロード）。更新は `:Lazy update`。初回は `:Copilot setup` で認証する。
 
 ### WSL設定 (`wsl/`)

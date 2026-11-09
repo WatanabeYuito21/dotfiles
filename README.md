@@ -147,6 +147,8 @@ dotfiles/
   - モデル選択
   - バッファ追加・選択範囲送信
   - インラインdiff受け入れ・拒否
+  - Claude ウィンドウの背景透過（エディタ側の透過設定に合わせる）
+  - Claude ウィンドウ（端末モード）からの `<C-w>` ウィンドウ移動
   - 依存プラグイン: folke/snacks.nvim
 - **copilot.vim**: GitHub Copilot（lazy.nvim 管理。`InsertEnter` / `:Copilot` で遅延ロード）
   - 初回は `:Copilot setup` で認証
@@ -312,6 +314,7 @@ setup.bat --help                       # ヘルプ表示
 | `<Leader>as`  | 選択範囲を送信 (V)       |
 | `<Leader>aa`  | diff 受け入れ            |
 | `<Leader>ad`  | diff 拒否                |
+| `<C-w>`       | ウィンドウ操作（Claude ウィンドウの端末モード内） |
 
 ### Neovim - メモ機能 (memolist.vim)
 
@@ -342,6 +345,8 @@ Neovim内からClaude Codeを操作できます。
 - `<Leader>ar`: 前回のセッションを再開
 - `<Leader>aC`: セッションを継続
 - `<Leader>am`: 使用するモデルを選択
+- `<C-w>h` / `<C-w>l` など: Claude Codeウィンドウ（端末モード）から他のウィンドウへ移動。戻ると自動で端末モードに戻る
+  - Claude Code の入力欄では `<C-w>` による単語削除は使えない
 
 #### バッファ・選択範囲の操作
 
