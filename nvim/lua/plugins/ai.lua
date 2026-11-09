@@ -17,6 +17,12 @@ return {
                     wo = {
                         fillchars = "eob: ,lastline:>",
                         listchars = "extends:>,tab:  ",
+                        -- NormalFloat 経由の背景色を使わず、透過済みの Normal を使う
+                        winhighlight = "Normal:Normal,NormalNC:NormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,WinSeparator:WinSeparator",
+                    },
+                    keys = {
+                        -- terminal モードから抜けてそのまま <C-w> のウィンドウ操作に入る
+                        win_nav = { "<C-w>", [[<C-\><C-n><C-w>]], mode = "t", desc = "Window command" },
                     },
                 },
             },
