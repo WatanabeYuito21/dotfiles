@@ -10,6 +10,9 @@ return {
             'MarkdownPreviewToggle',
         },
         ft = { 'markdown' },
+        keys = {
+            { '<Leader>mp', '<cmd>MarkdownPreviewToggle<cr>', ft = 'markdown', desc = 'Markdown Preview Toggle' },
+        },
         build = function()
             -- 遅延ロードのためビルド時は未ロード。先にロードしてから mkdp#util#install を呼ぶ
             require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
