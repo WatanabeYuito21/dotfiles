@@ -23,5 +23,13 @@ check_dependencies() {
     # のため Windows 側の pwsh.exe は使えず、WSL 内にネイティブインストールが必要
     command -v pwsh &>/dev/null || log_warn "pwsh が見つかりません（オプション、PowerShell LSP に必要。WSL の場合は appendWindowsPath=false のため Windows 側の pwsh は使えず、WSL 内にネイティブインストールが必要）"
 
+    # C コンパイラ: nvim-treesitter のパーサービルドに必要
+    local cc_found=false
+    for cmd in cc gcc clang zig; do
+        command -v "$cmd" &>/dev/null && { cc_found=true; break; }
+    done
+    $cc_found || log_warn "C コンパイラが見つかりません（オプション、treesitter パーサーのビルドに必要。例: sudo apt install build-essential）"
+    command -v tree-sitter &>/dev/null || log_warn "tree-sitter CLI が見つかりません（オプション、treesitter パーサーのビルドに必要。0.26.1 以上、npm 版は不可）"
+
     log_info "依存関係チェック完了"
 }

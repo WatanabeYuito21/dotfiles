@@ -75,6 +75,15 @@ function Test-Dependencies {
         }
     }
 
+    # nvim-treesitter (main) のパーサービルドに必要
+    $hasCC = @("cc", "gcc", "clang", "cl", "zig") | Where-Object { Get-Command $_ -ErrorAction SilentlyContinue }
+    if (!$hasCC) {
+        Write-WarnLog "C コンパイラが見つかりません（オプション、treesitter パーサーのビルドに必要。例: winget install zig.zig）"
+    }
+    if (!(Get-Command tree-sitter -ErrorAction SilentlyContinue)) {
+        Write-WarnLog "tree-sitter CLI が見つかりません（オプション、treesitter パーサーのビルドに必要。0.26.1 以上、npm 版は不可）"
+    }
+
     Write-InfoLog "依存関係チェック完了"
     return $true
 }

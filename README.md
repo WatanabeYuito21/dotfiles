@@ -108,6 +108,7 @@ dotfiles/
 - **nvim-treesitter**: パーサーベースのシンタックスハイライト・インデント
   - 対応言語: Lua, Python, JavaScript/TypeScript/TSX, Rust, Go, Markdown, PowerShell 等
   - Comment.nvim（`ts_context_commentstring`）などtreesitter依存プラグインの前提
+  - `main` ブランチ（Neovim 0.12+ 対応）を使用。パーサーのインストールには `tree-sitter` CLI（0.26.1 以上、npm 版は不可）と C コンパイラ（gcc / clang / zig 等）が必要。無い場合は自動インストールを止めて警告のみ出し、Neovim 同梱パーサー（lua, vim, vimdoc, query, markdown 等）でハイライトする
 
 #### エディタ機能
 
