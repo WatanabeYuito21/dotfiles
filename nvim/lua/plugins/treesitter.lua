@@ -17,8 +17,16 @@ local ensure_installed = {
 -- パーサーのビルドに必要なツールのうち見つからないものを返す
 local function missing_tools()
     local missing = {}
-    if vim.fn.executable('tree-sitter') == 0 then
-        table.insert(missing, 'tree-sitter CLI')
+    -- Windows ではビルドのジョブが .exe を直接起動するため、npm 版が置く
+    -- tree-sitter.cmd（中継スクリプト）は executable() では見つかっても起動できない。
+    -- .exe 本体があるかで判定する
+    local cli = vim.fn.has('win32') == 1 and 'tree-sitter.exe' or 'tree-sitter'
+    if vim.fn.executable(cli) == 0 then
+        if vim.fn.executable('tree-sitter') == 1 then
+            table.insert(missing, 'tree-sitter CLI の exe（npm 版の .cmd は使えないため cargo install tree-sitter-cli 等で入れる）')
+        else
+            table.insert(missing, 'tree-sitter CLI')
+        end
     end
     local has_cc = vim.iter({ 'cc', 'gcc', 'clang', 'cl', 'zig' }):any(function(c)
         return vim.fn.executable(c) == 1

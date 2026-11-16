@@ -112,7 +112,7 @@ nvim/lua/
 3. `nvim/lua/plugins/treesitter.lua` の `ensure_installed` に treesitter パーサー名を追加（未対応だと Comment.nvim 等 treesitter 依存機能が `[Comment.nvim] nil` のようなエラーになる）
 4. Mason を使う場合は `nvim/lua/plugins/lsp.lua` の mason-lspconfig `ensure_installed` に lspconfig 名を追加する（自動有効化は `automatic_enable = false` のため、有効化は手順1の `servers.lua` のみで行われる）。システムパッケージマネージャーで入れる場合は `:Mason` または各パッケージマネージャーでインストール
 
-- nvim-treesitter は `main` ブランチ（`master` は凍結済みで Neovim 0.12 のクエリ API 変更に非対応、埋め込み言語の解析で `attempt to call method 'range'` エラーになる）。`main` は遅延ロード非対応・`nvim-treesitter.configs` モジュールなし。ハイライト（`vim.treesitter.start`）とインデント（`indentexpr`）は `treesitter.lua` の FileType autocmd で有効化し、未導入パーサーの自動インストール（旧 `auto_install` 相当）もそこで行う。パーサーのビルドには `tree-sitter` CLI と C コンパイラが必要で、無い環境では自動インストールを止めて警告を1回だけ出す
+- nvim-treesitter は `main` ブランチ（`master` は凍結済みで Neovim 0.12 のクエリ API 変更に非対応、埋め込み言語の解析で `attempt to call method 'range'` エラーになる）。`main` は遅延ロード非対応・`nvim-treesitter.configs` モジュールなし。ハイライト（`vim.treesitter.start`）とインデント（`indentexpr`）は `treesitter.lua` の FileType autocmd で有効化し、未導入パーサーの自動インストール（旧 `auto_install` 相当）もそこで行う。パーサーのビルドには `tree-sitter` CLI と C コンパイラが必要で、無い環境では自動インストールを止めて警告を1回だけ出す。Windows では `tree-sitter.exe` の有無で判定する（npm 版の `tree-sitter-cli` は `.cmd` の中継スクリプトしか PATH に置かず、`executable()` は真でもビルドのジョブからは起動できず `ENOENT` になるため。`cargo install --locked tree-sitter-cli` で入れる）
 - lazy.nvim の rtp リセットで `stdpath('data')/site` が runtimepath から外れるため、`require('nvim-treesitter').setup({ install_dir = ... })` で明示している（省略すると `:checkhealth nvim-treesitter` で `is not in runtimepath` エラー）
 - `nvim/lazy-lock.json` はコミット対象（プラグイン版の固定）。`:Lazy update` 後は差分をコミットし、他マシンでは `:Lazy restore` で揃える
 - mason-lspconfig の `ensure_installed` は headless 起動では実行されない。`setup.sh` の Lazy sync では LSP サーバーは入らず、初回の通常起動時にインストールされる
