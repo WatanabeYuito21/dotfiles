@@ -95,7 +95,7 @@ nvim/lua/
 │   ├── treesitter.lua   # nvim-treesitter（パーサー管理・シンタックスハイライト）
 │   ├── editor.lua       # Comment.nvim, treesj
 │   ├── file_management.lua
-│   ├── markdown.lua     # markdown-preview, memolist
+│   ├── markdown.lua     # markdown-preview, render-markdown, memolist
 │   ├── formatter.lua    # conform.nvim（保存時自動フォーマット）
 │   ├── lsp.lua          # mason, mason-lspconfig（ensure_installed）, lazydev, nvim-cmp, LuaSnip
 │   └── ai.lua           # claudecode.nvim, copilot.vim

@@ -19,4 +19,14 @@ return {
             vim.g.mkdp_filetypes = { 'markdown' }
         end,
     },
+    {
+        -- バッファ内でMarkdownを整形表示（見出し・表・コードブロック等）
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+        ft = { 'markdown' },
+        opts = {},
+    },
 }
