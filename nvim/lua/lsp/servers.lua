@@ -81,9 +81,15 @@ function M.setup(capabilities)
     end
 
     -- Markdown言語サーバー設定
-    if vim.fn.executable('marksman') == 1 then
+    -- Windows では Mason の marksman.cmd が、括弧を含むユーザーフォルダ（例: 渡邊唯人(ecbeing)）の
+    -- パスを cmd.exe に誤解釈されて起動できないため、exe があれば直接指定する
+    local marksman_exe = vim.fn.stdpath('data') .. '/mason/packages/marksman/marksman.exe'
+    local marksman = vim.fn.executable(marksman_exe) == 1 and marksman_exe
+        or (vim.fn.executable('marksman') == 1 and 'marksman')
+    if marksman then
         vim.lsp.config.marksman = {
             capabilities = capabilities,
+            cmd = { marksman, 'server' },
         }
         table.insert(servers_to_enable, 'marksman')
     end
