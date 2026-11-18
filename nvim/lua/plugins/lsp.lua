@@ -4,7 +4,10 @@
 return {
     {
         -- LSPサーバー管理ツール
+        -- 起動時には読まない。nvim-lspconfig の dependencies として BufReadPre で読まれ、
+        -- そのとき setup() が PATH に mason/bin を足す（LSP の起動より先）
         'williamboman/mason.nvim',
+        cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll', 'MasonLog', 'MasonUpdate' },
         config = function()
             require('mason').setup()
         end,
@@ -16,13 +19,15 @@ return {
         opts = {},
     },
     {
-        -- スニペットエンジン
+        -- スニペットエンジン（nvim-cmp の依存として InsertEnter で読み込む）
         'L3MON4D3/LuaSnip',
+        lazy = true,
         build = 'make install_jsregexp',
     },
     {
         -- 補完エンジン
         'hrsh7th/nvim-cmp',
+        event = { 'InsertEnter' },
         dependencies  = {
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-buffer',
@@ -80,6 +85,9 @@ return {
     {
         'williamboman/mason-lspconfig.nvim',
         dependencies = { 'williamboman/mason.nvim' },
+        -- ensure_installed と :LspInstall 用。LSP の有効化は lsp/servers.lua なので UI 表示後でよい
+        event = 'VeryLazy',
+        cmd = { 'LspInstall', 'LspUninstall' },
         config = function()
             -- servers.lua と同じサーバーを自動インストールする。
             -- 必要なツールチェーンがない環境ではエラー通知を避けるため対象から外す。
@@ -99,10 +107,11 @@ return {
 
     {
         'neovim/nvim-lspconfig',
+        event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
+            -- mason は PATH 設定のために lspconfig より先に読み込む
             'williamboman/mason.nvim',
-            'williamboman/mason-lspconfig.nvim',
-            'hrsh7th/nvim-cmp',
+            -- mason-lspconfig と nvim-cmp は依存から外す（それぞれ VeryLazy / InsertEnter で読む）
         },
         config = function()
             require('lsp')

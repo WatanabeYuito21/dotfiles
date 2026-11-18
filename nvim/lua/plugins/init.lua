@@ -36,6 +36,20 @@ end
 -- Setup lazy.nvim with all plugins
 require('lazy').setup(get_all_plugins(), {
     rocks = {
-        enabled = true,
+        enabled = false,
+    },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                'netrwPlugin', -- 4.5ms。neo-tree を使うので不要（file_management.lua の init で代替）
+                'gzip',
+                'tarPlugin',
+                'zipPlugin',
+                'tohtml',
+                'tutor',
+                'rplugin',
+                -- 'matchit',  -- 4.4ms。% で HTML タグや if-end を行き来するなら外さない
+            },
+        },
     },
 })

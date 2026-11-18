@@ -41,7 +41,9 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         branch = 'main',
-        lazy = false, -- main ブランチは遅延ロード非対応
+        -- ファイルを引数に起動したときだけ最初から読み込み、引数なしならファイルを開く時に読む
+        lazy = vim.fn.argc(-1) == 0,
+        event = { 'BufReadPre', 'BufNewFile' },
         build = ':TSUpdate',
         config = function()
             local ts = require('nvim-treesitter')
@@ -49,24 +51,41 @@ return {
             -- install_dir を明示して runtimepath に追加させる
             ts.setup({ install_dir = vim.fn.stdpath('data') .. '/site' })
 
+            -- executable() の走査や parsers 表の読み込みは重いので、必要になるまで遅延する。
             -- ツールが無い環境では FileType ごとにインストールが失敗し続けるため、
             -- 自動インストールを止めて一度だけ警告する
             -- （ハイライトは導入済みパーサーと Neovim 同梱パーサーで動く）
-            local missing = missing_tools()
-            local can_install = #missing == 0
-            if can_install then
-                ts.install(ensure_installed)
-            else
-                vim.schedule(function()
-                    vim.notify(
-                        '[treesitter] ' .. table.concat(missing, ' / ')
-                            .. ' が見つからないためパーサーの自動インストールを無効化しました',
-                        vim.log.levels.WARN
-                    )
-                end)
+            local state
+            local function installer()
+                if not state then
+                    local missing = missing_tools()
+                    state = { can_install = #missing == 0, available = {} }
+                    if state.can_install then
+                        state.available = ts.get_available()
+                    else
+                        vim.schedule(function()
+                            vim.notify(
+                                '[treesitter] ' .. table.concat(missing, ' / ')
+                                    .. ' が見つからないためパーサーの自動インストールを無効化しました',
+                                vim.log.levels.WARN
+                            )
+                        end)
+                    end
+                end
+                return state
             end
 
-            local available = can_install and ts.get_available() or {}
+            -- ensure_installed は UI 表示後に実行する（VeryLazy 発火済みなら即時）
+            local function ensure()
+                if installer().can_install then
+                    ts.install(ensure_installed)
+                end
+            end
+            if vim.g.did_very_lazy then
+                vim.schedule(ensure)
+            else
+                vim.api.nvim_create_autocmd('User', { pattern = 'VeryLazy', once = true, callback = ensure })
+            end
 
             local function enable(buf, lang)
                 -- パーサーが無い言語では start がエラーになるので pcall で握りつぶす
@@ -84,7 +103,7 @@ return {
                         return
                     end
                     -- 旧 auto_install 相当: 未導入だがインストール可能な言語は入れてから有効化
-                    if not vim.treesitter.language.add(lang) and vim.list_contains(available, lang) then
+                    if not vim.treesitter.language.add(lang) and vim.list_contains(installer().available, lang) then
                         ts.install(lang):await(vim.schedule_wrap(function(err)
                             if not err and vim.api.nvim_buf_is_valid(args.buf) then
                                 enable(args.buf, lang)

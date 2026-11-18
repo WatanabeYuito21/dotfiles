@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 -- 基本オプション設定
 require('options')
 

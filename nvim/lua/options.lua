@@ -2,14 +2,12 @@
 local opt = vim.opt
 local cmd = vim.cmd
 
--- python場所指定
-local python_path = vim.fn.expand("~/.pyenv/shims/python3")
-if vim.fn.executable(python_path) == 1 then
-    vim.g.python3_host_prog = python_path
-else
-    -- fallback to system python
-    vim.g.python3_host_prog = vim.fn.exepath("python3")
-end
+-- python provider 無効化
+-- pynvim を使うリモートプラグインは無く、python は LSP(pyright)/conform 経由で使う。
+-- provider 有効のままだと .py を開くたびに ftplugin が python3 を spawn して確認する。
+-- pyenv-win の shim（拡張子なしの python3）は vim.system で spawn できず ENOENT で
+-- FileType 処理が中断する。必要になったら下行を消し、python3_host_prog を設定する。
+vim.g.loaded_python3_provider = 0
 
 -- 行番号表示
 opt.number = true
@@ -92,11 +90,3 @@ cmd('highlight NormalSB ctermbg=none')
 -- visual mode のハイライト設定
 cmd('highlight visual guibg=#455354 guifg=none')
 cmd('highlight visualNOS guibg=#455354 guifg=none')
-
-vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
-})

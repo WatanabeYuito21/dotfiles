@@ -3,15 +3,19 @@
 
 return {
     {
-        -- コメントアウトを簡単にするプラグイン
-        'numToStr/Comment.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'JoosepAlviste/nvim-ts-context-commentstring' },
-        opts = function()
-            require('ts_context_commentstring').setup({ enable_autocmd = false })
-            return {
-                pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-            }
+        -- Neovim 標準の gc / gcc に、tsx など埋め込み言語向けの commentstring 判定だけを足す
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        lazy = true,
+        init = function()
+            local get_option = vim.filetype.get_option
+            vim.filetype.get_option = function(filetype, option)
+                return option == 'commentstring'
+                    and require('ts_context_commentstring.internal').calculate_commentstring()
+                    or get_option(filetype, option)
+            end
         end,
+        -- 標準の gc が commentstring を決めるので、CursorHold での自動更新は不要
+        opts = { enable_autocmd = false },
     },
     {
         -- コードの折りたたみを強化するプラグイン

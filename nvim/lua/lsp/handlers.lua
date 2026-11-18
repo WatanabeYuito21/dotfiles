@@ -1,8 +1,14 @@
 -- dotfiles/nvim/lua/lsp/handlers.lua
 -- LSPアタッチ時のキーマップとイベント設定
 
--- conform.nvimのチェック
-local conform_ok, conform = pcall(require, 'conform')
+-- 診断表示の設定（LSP 以外に診断を出すプラグインは無いので、LSP の読み込みと一緒に適用する）
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+})
 
 -- LSPのキーマップ設定
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -27,8 +33,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
 
         -- フォーマット(conform.nvim を優先、フォールバックでLSP)
+        -- conform は押されたときに初めて読み込む
         vim.keymap.set('n', '<space>f', function()
-            if conform_ok then
+            local ok, conform = pcall(require, 'conform')
+            if ok then
                 conform.format({ async = true, lsp_format = 'fallback' })
             else
                 vim.lsp.buf.format({ async = true })
