@@ -91,7 +91,8 @@ return {
         config = function()
             -- servers.lua と同じサーバーを自動インストールする。
             -- 必要なツールチェーンがない環境ではエラー通知を避けるため対象から外す。
-            local function has(cmd) return vim.fn.executable(cmd) == 1 end
+            -- lsp/servers.lua と同じコマンドを調べるので、PATH 検索の結果は共有する
+            local has = require('exe_cache').executable
             local ensure_installed = { 'lua_ls', 'rust_analyzer', 'marksman' }
             if has('npm') then vim.list_extend(ensure_installed, { 'pyright', 'ts_ls' }) end
             if has('go') then table.insert(ensure_installed, 'gopls') end

@@ -30,6 +30,11 @@ return {
             'nvim-tree/nvim-web-devicons',
         },
         ft = { 'markdown' },
-        opts = {},
+        opts = {
+            -- 補完（チェックボックス・コールアウト）はプラグイン内蔵の LSP 経由にする。
+            -- 既定の nvim-cmp 連携だと .md を開いた時点で nvim-cmp と LuaSnip が連鎖ロードされる。
+            -- 内蔵 LSP は cmp-nvim-lsp の nvim_lsp ソース経由で、これまでどおり nvim-cmp の候補に出る
+            completions = { lsp = { enabled = true } },
+        },
     },
 }

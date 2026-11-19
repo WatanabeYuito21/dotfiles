@@ -3,6 +3,9 @@
 
 local M = {}
 
+-- PATH 検索（executable / exepath）の結果を共有するキャッシュ
+local exe_cache = require('exe_cache')
+
 -- Windows では Mason の bin/*.cmd 中継が、括弧を含むユーザーフォルダ（例: 渡邊唯人(ecbeing)）の
 -- パスを cmd.exe に誤解釈されて起動できない。中継を介さず実体を直接起動する cmd を組み立てる。
 -- 実体が見つからなければ nil を返し、その場合は lspconfig 既定の cmd（PATH 上のコマンド）に任せる。
@@ -19,7 +22,7 @@ end
 -- node スクリプトを node.exe 経由で直接起動する cmd（npm の .cmd 中継の代わり）
 local function mason_node_cmd(relpath, args)
     local script = mason_packages .. relpath
-    local node = vim.fn.exepath('node')
+    local node = exe_cache.exepath('node')
     if node ~= '' and vim.fn.filereadable(script) == 1 then
         return vim.list_extend({ node, script }, args or {})
     end
@@ -90,12 +93,30 @@ function M.setup(capabilities)
 
     -- PowerShell言語サーバー設定
     -- （cmd が関数になる設定のため validate_cmd が実行可否を見ない。pwsh のガードは残す）
-    if vim.fn.executable('pwsh') == 1 then
+    -- pwsh の PATH 検索は、見つからないと 30ms 以上かかるので、PowerShell のファイル（ft=ps1）を
+    -- 開く時まで遅らせる。pwsh が無ければこれまでどおり設定も有効化もしない
+    local function setup_powershell_es()
+        if not exe_cache.executable('pwsh') then
+            return
+        end
         vim.lsp.config.powershell_es = {
             capabilities = capabilities,
             bundle_path = vim.fn.stdpath('data') .. '/mason/packages/powershell-editor-services',
         }
-        table.insert(servers_to_enable, 'powershell_es')
+        vim.lsp.enable('powershell_es')
+    end
+    local ps_open = vim.iter(vim.api.nvim_list_bufs()):any(function(buf)
+        return vim.bo[buf].filetype == 'ps1'
+    end)
+    if ps_open then
+        setup_powershell_es()
+    else
+        vim.api.nvim_create_autocmd('FileType', {
+            group = vim.api.nvim_create_augroup('dotfiles_lsp_powershell_es', { clear = true }),
+            pattern = 'ps1',
+            once = true,
+            callback = setup_powershell_es,
+        })
     end
 
     -- Markdown言語サーバー設定
